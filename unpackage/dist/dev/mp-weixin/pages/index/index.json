@@ -1,0 +1,14 @@
+{
+  "navigationBarTitleText": "uni-app",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "z-paging": "../../uni_modules/z-paging/components/z-paging/z-paging",
+    "tn-popup": "../../uni_modules/tuniaoui-vue3/components/popup/src/popup",
+    "fui-bottom-popup": "../../components/fui-bottom-popup",
+    "parse": "../../components/parse",
+    "tn-icon": "../../uni_modules/tuniaoui-vue3/components/icon/src/icon",
+    "roles": "../../components/Roles",
+    "team": "../../components/team",
+    "dungeon-select": "../../components/dungeonSelect"
+  }
+}

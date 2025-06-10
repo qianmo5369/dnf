@@ -1,0 +1,161 @@
+
+.appeal-form-page.data-v-6c024c73 {
+		padding: 30rpx;
+		background-color: #fff;
+		/* min-height: 100vh; */
+}
+.form-header.data-v-6c024c73 {
+		text-align: center;
+		margin-bottom: 40rpx;
+}
+.form-title.data-v-6c024c73 {
+		font-size: 36rpx;
+		font-weight: bold;
+}
+.label.data-v-6c024c73 {
+		font-size: 30rpx;
+		color: #333;
+		margin: 20rpx 0rpx;
+		display: block;
+		font-weight: 500;
+}
+.label.required.data-v-6c024c73::before {
+		content: '*';
+		color: red;
+		margin-right: 6rpx;
+}
+.complain-target.data-v-6c024c73 {
+		display: flex;
+		align-items: center;
+		background: #f5f5f5;
+		border-radius: 12rpx;
+		padding: 20rpx;
+}
+.avatar.data-v-6c024c73 {
+		width: 80rpx;
+		height: 80rpx;
+		border-radius: 50%;
+		margin-right: 20rpx;
+}
+.info .name.data-v-6c024c73 {
+		font-size: 30rpx;
+		font-weight: bold;
+}
+.info .sub.data-v-6c024c73 {
+		font-size: 24rpx;
+		color: #999;
+}
+.textarea.data-v-6c024c73 {
+		width: 100%;
+		height: 200rpx;
+		background: #fff;
+		border-radius: 12rpx;
+		padding: 20rpx;
+		font-size: 28rpx;
+		border: 2rpx solid #f7f7f7;
+}
+.upload-box.data-v-6c024c73 {
+		/* background: #f7f7f7; */
+		border-radius: 16rpx;
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		/* justify-content: center; */
+}
+.upload-placeholder.data-v-6c024c73 {
+		font-size: 60rpx;
+		color: #ccc;
+}
+.preview.data-v-6c024c73 {
+		width: 100%;
+		height: 100%;
+		border-radius: 12rpx;
+}
+.bottom-btn.data-v-6c024c73 {
+		margin-top: 80rpx;
+}
+.submit-btn.data-v-6c024c73 {
+		background: #007aff;
+		color: #fff;
+		font-size: 28rpx;
+		border-radius: 10rpx;
+		padding: 25rpx 0;
+		text-align: center;
+}
+.role-list.data-v-6c024c73 {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-gap: 20rpx;
+		/* padding: 30rpx; */
+		margin-top: 30rpx;
+}
+
+	/* 单个角色卡片 */
+.role-card.data-v-6c024c73 {
+		position: relative;
+		display: flex;
+		align-items: center;
+		background: #fff;
+		border-radius: 16rpx;
+		padding: 20rpx;
+		box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+		overflow: hidden;
+		border: 2rpx solid transparent;
+}
+
+	/* 三角形背景——尖朝左下，位于右上角 */
+.card-active.data-v-6c024c73::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 90rpx;
+		/* 三角边长 */
+		height: 60rpx;
+		background-color: #409eff;
+		-webkit-clip-path: polygon(100% 0%,
+				/* 顶点：右上 */
+				100% 100%,
+				/* 底点：右下 */
+				0% 0%
+				/* 左顶点：左上 */
+			);
+		        clip-path: polygon(100% 0%,
+				/* 顶点：右上 */
+				100% 100%,
+				/* 底点：右下 */
+				0% 0%
+				/* 左顶点：左上 */
+			);
+}
+
+	/* 对勾 */
+.card-active.data-v-6c024c73::after {
+		content: "当前";
+		position: absolute;
+		top: 4rpx;
+		right: 4rpx;
+		font-size: 20rpx;
+		/* line-height: 50rpx; */
+		color: #fff;
+		/* line-height: 2; */
+}
+
+	/* 文字区域 */
+.role-info.data-v-6c024c73 {
+		margin-left: 20rpx;
+}
+.role-value.data-v-6c024c73 {
+		font-size: 28rpx;
+		color: #333;
+		font-weight: bold;
+}
+.role-subtitle.data-v-6c024c73 {
+		font-size: 24rpx;
+		color: #888;
+		margin-top: 8rpx;
+}
+.selected.data-v-6c024c73 {
+	  border: 2rpx solid #2e89ff;
+	  background: #e6f0ff;
+}

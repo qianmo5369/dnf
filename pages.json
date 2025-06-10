@@ -1,0 +1,169 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "uni-app",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/user/user",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"disableScroll": true
+			}
+		},
+		{
+			"path": "pages/red/red",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": true,
+				"disableScroll": true
+			}
+		},
+		{
+			"path": "pages/room/room",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/hero/hero",
+			"style": {
+				"navigationBarTitleText": "角色管理",
+				"enablePullDownRefresh": true,
+				"disableScroll": true
+			}
+		},
+		{
+			"path": "pages/hero/edit",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path" : "pages/user/balance",
+			"style" : 
+			{
+				"navigationBarTitleText" : "账户余额",
+				"enablePullDownRefresh": true,
+				"disableScroll": true
+			}
+		},
+		{
+			"path" : "pages/user/deposit",
+			"style" : 
+			{
+				"navigationBarTitleText" : "我的助战币",
+				"enablePullDownRefresh": true,
+				"disableScroll": true
+			}
+		},
+		{
+			"path" : "pages/user/feedback",
+			"style" : 
+			{
+				"navigationBarTitleText" : "建议反馈",
+				"enablePullDownRefresh": true,
+				"disableScroll": true
+			}
+		},
+		{
+			"path" : "pages/user/team-record",
+			"style" : 
+			{
+				"navigationBarTitleText" : "组队记录",
+				"enablePullDownRefresh": true,
+				"disableScroll": true
+			}
+		},
+		{
+			"path" : "pages/complaint/complaint",
+			"style" : 
+			{
+				"navigationBarTitleText" : "申诉详细"
+			}
+		},
+		{
+			"path" : "pages/complaint/send",
+			"style" : 
+			{
+				"navigationBarTitleText" : "发起申诉"
+			}
+		},
+		{
+			"path" : "pages/complaint/reply",
+			"style" : 
+			{
+				"navigationBarTitleText" : "申诉回复"
+			}
+		},
+		{
+			"path" : "pages/complaint/index",
+			"style" : 
+			{
+				"navigationBarTitleText" : "结算详细"
+			}
+		},
+		{
+			"path" : "pages/user/complaint-record",
+			"style" : 
+			{
+				"navigationBarTitleText" : "申诉记录"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#F8F8F8",
+		"enablePullDownRefresh": false
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#3366ff",
+		"borderStyle": "white",
+		"backgroundColor": "#ffffff",
+		"height": "60px",
+		"fontSize": "10px",
+		"iconWidth": "20px",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabbar/game.png",
+				"selectedIconPath": "/static/tabbar/game_active.png",
+				"text": "组队大厅"
+			}, {
+				"pagePath": "pages/red/red",
+				"iconPath": "/static/tabbar/02.png",
+				"selectedIconPath": "/static/tabbar/02_active.png",
+				"text": "邀请"
+			},
+			{
+				"pagePath": "pages/user/user",
+				"iconPath": "/static/tabbar/user.png",
+				"selectedIconPath": "static/tabbar/user_active.png",
+				"text": "我的"
+			}
+		]
+	},
+	"uniIdRouter": {},
+	"easycom": {
+		"custom": {
+			"^tn-(.*)-(item|group)$": "@/uni_modules/tuniaoui-vue3/components/$1/src/$1-$2.vue",
+			"^tn-(.*)": "@/uni_modules/tuniaoui-vue3/components/$1/src/$1.vue"
+		}
+	}
+}

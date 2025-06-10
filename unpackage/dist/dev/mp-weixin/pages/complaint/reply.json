@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "申诉回复",
+  "usingComponents": {
+    "fui-upload": "../../components/fui-upload"
+  }
+}

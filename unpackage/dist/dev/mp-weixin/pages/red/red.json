@@ -1,0 +1,10 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "",
+  "enablePullDownRefresh": true,
+  "disableScroll": true,
+  "usingComponents": {
+    "tn-popup": "../../uni_modules/tuniaoui-vue3/components/popup/src/popup",
+    "fui-nav-bar": "../../components/fui-nav-bar"
+  }
+}

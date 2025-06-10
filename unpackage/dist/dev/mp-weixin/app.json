@@ -1,0 +1,54 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/user/user",
+    "pages/red/red",
+    "pages/room/room",
+    "pages/login/login",
+    "pages/hero/hero",
+    "pages/hero/edit",
+    "pages/user/balance",
+    "pages/user/deposit",
+    "pages/user/feedback",
+    "pages/user/team-record",
+    "pages/complaint/complaint",
+    "pages/complaint/send",
+    "pages/complaint/reply",
+    "pages/complaint/index",
+    "pages/user/complaint-record"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F8F8F8",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3366ff",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tabbar/game.png",
+        "selectedIconPath": "/static/tabbar/game_active.png",
+        "text": "组队大厅"
+      },
+      {
+        "pagePath": "pages/red/red",
+        "iconPath": "/static/tabbar/02.png",
+        "selectedIconPath": "/static/tabbar/02_active.png",
+        "text": "邀请"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "iconPath": "/static/tabbar/user.png",
+        "selectedIconPath": "static/tabbar/user_active.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "组队记录",
+  "enablePullDownRefresh": true,
+  "disableScroll": true,
+  "usingComponents": {}
+}

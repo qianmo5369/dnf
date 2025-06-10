@@ -1,0 +1,244 @@
+
+.hd.data-v-176a9427 {
+  position: relative;
+  text-align: center;
+  font-size: 32rpx;
+  padding: 24rpx;
+  color: #333;
+}
+.btn-close.data-v-176a9427 {
+  position: absolute;
+  right: 24rpx;
+  top: 24rpx;
+}
+.bd.data-v-176a9427 {
+  padding: 0 24rpx 20rpx;
+  height: 100%;
+}
+/* 团本列表 */
+.dungeon-list.data-v-176a9427 {
+  display: flex;
+  gap: 10rpx;
+  margin-bottom: 24rpx;
+}
+.dungeon-item.data-v-176a9427 {
+	position: relative;
+	background-size: 100% 100%;
+	/* margin: 15rpx 10rpx; */
+	height: 120rpx;
+	flex: 1;
+	/* background: #fff; */
+	/* padding: 20rpx; */
+	border-radius: 10rpx;
+	color: #888;
+	font-size: 24rpx;
+}
+.dungeon-label.data-v-176a9427 {
+  position: absolute;
+  right: 0rpx;
+  bottom: 1rpx;
+  padding: 10rpx 10rpx;
+  font-size: 26rpx;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 10rpx 0rpx 10rpx 0rpx;
+}
+/* 内部 Tab */
+.inner-tab.data-v-176a9427 {
+  flex-direction: row;
+  display: flex;
+  /* border: 1rpx solid #eee; */
+  border-radius: 10rpx;
+  overflow: hidden;
+  margin-bottom: 24rpx;
+box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1); /* 阴影效果 */
+}
+.inner-tab-item.data-v-176a9427 {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  color: #666;
+}
+/* .inner-tab-item.active {
+  color: #409eff;
+  background: #f6f8ff;
+} */
+.inner-tab-item text.data-v-176a9427 {
+  display: inline-block;
+  position: relative;
+}
+.inner-tab-item.active text.data-v-176a9427 {
+  color: #007aff;
+  font-weight: bold;
+  font-size: 30rpx;
+}
+.inner-tab-item.active text.data-v-176a9427::after {
+  content: '';
+  position: absolute;
+  bottom: -10rpx; /* 距离文字底部的距离 */
+  left: 0;
+  width: 100%;
+  height: 5rpx;
+  background: linear-gradient(90deg, #366fff 0%, #5da0fc 100%);
+  border-radius: 2rpx;
+}
+.current-role.data-v-176a9427 {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;           
+  margin-bottom: 15rpx;
+}
+.role-name.data-v-176a9427{
+	margin-left: 20rpx;
+	font-size: 30rpx;
+}
+.role-seller.data-v-176a9427{
+	color: #409eff;
+}
+.role-buy.data-v-176a9427{
+	color: red;
+}
+.tn-icon-help.data-v-176a9427{
+	margin-left: 10rpx;
+}
+
+/* 左侧标签固定宽度（可选） */
+.current-role .label.data-v-176a9427 {
+  /* 如果想让左侧宽度固定，可以加上宽度 */
+  /* width: 120rpx; */
+  color: #888;
+}
+
+/* 右侧角色显示区不自动拉伸 */
+.current-role .role-display.data-v-176a9427 {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+/* 小头像 + 名字间距 */
+.current-role .role-display tn-avatar.data-v-176a9427 {
+  margin-right: 16rpx;
+}
+
+/* 表单组 */
+.form-group.data-v-176a9427 {
+  display: flex;
+  justify-content: space-between;  /* 左右拉满 */
+  align-items: center;             /* 垂直居中 */
+  /* margin-bottom: 24rpx; */
+  height: 80rpx;
+  color: #888;
+  font-size: 28rpx;
+}
+
+/* 标签那一块去掉 margin-bottom */
+.form-group .label-with-tip.data-v-176a9427 {
+  margin-bottom: 0;
+}
+
+/* 让选项组靠右 */
+.form-group .options.data-v-176a9427 {
+  /* 确保 options 不会被拉伸 */
+  flex: 0 0 auto;
+  display: flex;
+  gap: 30rpx;
+  color: #000;
+}
+.option-btn.data-v-176a9427 {
+  flex: 1;
+  text-align: center;
+  padding: 5rpx 20rpx;
+  border: 2rpx solid #ddd;
+  border-radius: 5rpx;
+  border-color: #3366ff;
+  color: #3366ff;
+  background: #fff;
+}
+.option-btn.active.data-v-176a9427 {
+  background: #3366ff;
+  color: #fff;
+}
+/* 单选 */
+.radio-item.data-v-176a9427 {
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+}
+.radio.data-v-176a9427 {
+  width: 38rpx;
+  height: 38rpx;
+  border: 3rpx solid #ccc;
+  border-radius: 50%;
+  position: relative;
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+.radio.checked.data-v-176a9427 {
+  border-color: #3366ff;
+}
+.radio.checked.data-v-176a9427::after {
+  content: "";
+  position: absolute;
+  top: 6rpx;
+  left: 6rpx;
+  width: 22rpx;
+  height: 22rpx;
+  background: #3366ff;
+  border-radius: 50%;
+}
+/* 警告 */
+.warning.data-v-176a9427 {
+  color: #e74c3c;
+  font-size: 24rpx;
+  text-align: center;
+  margin-bottom: 24rpx;
+  font-weight: 500;
+}
+/* 底部按钮 */
+.ft.data-v-176a9427 {
+	position: absolute;
+	bottom: 10rpx;
+	width: 100%;
+}
+.btn-group.data-v-176a9427{
+	flex-direction: row;
+	display: flex;
+	padding: 20rpx;
+	/* padding: 20rpx 24rpx calc(20rpx + env(safe-area-inset-bottom)); */
+	gap: 16rpx;
+	background: #fff;
+}
+.btn.data-v-176a9427 {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+/*  line-height: 100rpx;
+  height: 100rpx;
+  box-sizing: border-box; */
+}
+.btn-outline.data-v-176a9427 {
+  border: 2rpx solid #3366ff;
+  color: #3366ff;
+  background: #fff;
+}
+.btn-primary.data-v-176a9427 {
+  background: #3366ff;
+  color: #fff;
+}
+.mask.data-v-176a9427 {
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  width: 100%;
+	  height: 100%;
+	  background-color: rgba(255, 255, 255, 0.4); /* 白色半透明 */
+	  pointer-events: none; /* 不挡点击 */
+}
+.mask-hidden.data-v-176a9427 {
+	  display: none;
+}
+
+

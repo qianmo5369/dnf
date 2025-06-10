@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "账户余额",
+  "enablePullDownRefresh": true,
+  "disableScroll": true,
+  "usingComponents": {
+    "z-paging": "../../uni_modules/z-paging/components/z-paging/z-paging",
+    "tn-icon": "../../uni_modules/tuniaoui-vue3/components/icon/src/icon",
+    "tn-popup": "../../uni_modules/tuniaoui-vue3/components/popup/src/popup"
+  }
+}

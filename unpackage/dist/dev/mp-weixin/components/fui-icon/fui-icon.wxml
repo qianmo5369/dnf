@@ -1,0 +1,1 @@
+<text style="{{'color:' + b + ';' + ('font-size:' + c) + ';' + ('font-weight:' + d)}}" class="{{['fui-icon', 'data-v-9aa84251', e, f, g, h, i]}}" bindtap="{{j}}">{{a}}</text>

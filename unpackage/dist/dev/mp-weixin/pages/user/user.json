@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "",
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "disableScroll": true,
+  "usingComponents": {
+    "tn-avatar": "../../uni_modules/tuniaoui-vue3/components/avatar/src/avatar",
+    "tn-icon": "../../uni_modules/tuniaoui-vue3/components/icon/src/icon"
+  }
+}

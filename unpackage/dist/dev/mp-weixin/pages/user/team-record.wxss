@@ -1,0 +1,97 @@
+
+.team-record-page.data-v-e83a8c56 {
+  background: #fff;
+  /* min-height: 100vh; */
+}
+.tabs.data-v-e83a8c56 {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  background: #fff;
+  /* border-bottom: 1rpx solid #eee; */
+}
+.tab.data-v-e83a8c56 {
+  font-size: 28rpx;
+  color: #666;
+  margin-right: 40rpx;
+  padding-bottom: 10rpx;
+  position: relative;
+}
+.tab.active.data-v-e83a8c56 {
+  color: #007aff;
+  font-weight: bold;
+}
+.line.data-v-e83a8c56{
+	width: 100%;
+	height: 30rpx;
+	background: #f8f8f8;
+}
+
+/* .tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4rpx;
+  background: #007aff;
+  border-radius: 2rpx;
+} */
+.record-list.data-v-e83a8c56 {
+  padding: 20rpx;
+}
+.record-item.data-v-e83a8c56 {
+  display: flex;
+  padding: 20rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  /* box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05); */
+  margin-bottom: 20rpx;
+  align-items: flex-start;
+  border-bottom: 1rpx solid #eee;
+}
+.avatar.data-v-e83a8c56 {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+.info.data-v-e83a8c56 {
+  flex: 1;
+}
+.top.data-v-e83a8c56 {
+  font-size: 26rpx;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.bottom.data-v-e83a8c56 {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+.tag.data-v-e83a8c56 {
+  padding: 6rpx 18rpx;
+  border-radius: 10rpx;
+  font-size: 22rpx;
+  color: #fff;
+}
+.tag.red.data-v-e83a8c56 {
+  background: #f56c6c;
+}
+.tag.blue.data-v-e83a8c56 {
+  background: #409eff;
+}
+.right.data-v-e83a8c56 {
+  text-align: right;
+  color: #999;
+  font-size: 24rpx;
+}
+.status.data-v-e83a8c56 {
+  margin-bottom: 10rpx;
+}

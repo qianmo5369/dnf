@@ -1,0 +1,145 @@
+
+page.data-v-0f7520f0 {
+		background: #f4f7fb;
+}
+.profile-page.data-v-0f7520f0 {
+		bottom: 0;
+		margin: 0;
+		background: #f4f7fb;
+		height: 100vh;
+}
+.profile-header.data-v-0f7520f0 {
+		display: flex;
+		align-items: center;
+		padding: 200rpx 40rpx 20rpx;
+		background: linear-gradient(to bottom, #66ccff, #ffffff);
+		/* background: linear-gradient(177.16deg, #fff 0%, #d9ecff 33.13%, #fff 69.08%, #fff 100%); */
+		/* background-image: url('https://resource.tuniaokj.com/images/cool_bg_image/icon_bg.png'); */
+}
+.avatar.data-v-0f7520f0 {
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 50%;
+		margin-right: 24rpx;
+}
+.profile-info.data-v-0f7520f0 {
+		flex: 1;
+		margin-left: 30rpx;
+}
+.nickname.data-v-0f7520f0 {
+		font-size: 36rpx;
+		font-weight: bold;
+		color: #333;
+}
+.userid.data-v-0f7520f0 {
+		font-size: 28rpx;
+		color: #666;
+		display: flex;
+		align-items: center;
+		gap: 8rpx;
+		margin-top: 10rpx;
+}
+.copy-icon.data-v-0f7520f0 {
+		width: 28rpx;
+		height: 28rpx;
+}
+.balance-card.data-v-0f7520f0 {
+		background: #2e2b27;
+		color: #ffe8b6;
+		font-size: 29rpx;
+		margin: 20rpx;
+		padding: 25rpx 30rpx;
+		border-radius: 20rpx;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+}
+.menu-list.data-v-0f7520f0 {
+		background: #fff;
+		margin: 20rpx;
+		border-radius: 20rpx;
+		overflow: hidden;
+}
+.menu-item.data-v-0f7520f0 {
+		display: flex;
+		align-items: center;
+		padding: 33rpx 30rpx;
+		border-bottom: 1rpx solid #f2f2f2;
+		position: relative;
+		/* margin: 0rpx 90rpx; */
+}
+.menu-icon.data-v-0f7520f0 {
+		width: 36rpx;
+		height: 36rpx;
+		margin-right: 24rpx;
+}
+.menu-text.data-v-0f7520f0 {
+		font-size: 28rpx;
+		color: #333;
+		flex: 1;
+}
+.arrow-icon.data-v-0f7520f0 {
+		width: 24rpx;
+		height: 24rpx;
+}
+.service-btn.data-v-0f7520f0 {
+		position: absolute;
+		right: 30rpx;
+		bottom: 300rpx;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		z-index: 9;
+}
+.kefu-img.data-v-0f7520f0 {
+		width: 88rpx;
+		height: 88rpx;
+		border-radius: 50%;
+		border: 6rpx solid #fff;
+		box-shadow: 0 6rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+.kefu-tag.data-v-0f7520f0 {
+		background: #ff7c1f;
+		color: #fff;
+		font-size: 20rpx;
+		padding: 4rpx 12rpx;
+		border-radius: 20rpx;
+		margin-top: -12rpx;
+}
+.group-banner.data-v-0f7520f0 {
+		margin: 32rpx;
+		border-radius: 20rpx;
+		overflow: hidden;
+}
+.group-banner image.data-v-0f7520f0 {
+		width: 100%;
+		display: block;
+}
+.balance-item.data-v-0f7520f0 {
+		display: flex;
+		align-items: center;
+		gap: 16rpx;
+}
+.balance-icon.data-v-0f7520f0 {
+		width: 36rpx;
+		height: 36rpx;
+}
+.balance-text.data-v-0f7520f0 {
+		color: #ffe8b6;
+		font-size: 30rpx;
+}
+.top-kefu.data-v-0f7520f0 {
+		position: absolute;
+		right: 10rpx;
+		bottom: 200rpx;
+		width: 146rpx;
+		height: 70rpx;
+		color: #fff;
+		background-image: url('https://dnf.hanyunkeji.cn/static/home/04.png');
+		background-size: 100% 100%;
+		font-size: 25rpx;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		padding-right: 10rpx;
+}

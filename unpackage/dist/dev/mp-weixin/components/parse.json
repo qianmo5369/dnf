@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "tn-icon": "../uni_modules/tuniaoui-vue3/components/icon/src/icon"
+  }
+}

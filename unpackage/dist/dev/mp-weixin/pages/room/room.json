@@ -1,0 +1,16 @@
+{
+  "enablePullDownRefresh": false,
+  "navigationBarTitleText": "",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "fui-icon": "../../components/fui-icon/fui-icon",
+    "tn-modal": "../../uni_modules/tuniaoui-vue3/components/modal/src/modal",
+    "tn-icon": "../../uni_modules/tuniaoui-vue3/components/icon/src/icon",
+    "fui-upload": "../../components/fui-upload",
+    "fui-bottom-popup": "../../components/fui-bottom-popup",
+    "tn-avatar": "../../uni_modules/tuniaoui-vue3/components/avatar/src/avatar",
+    "fui-safe-area": "../../components/fui-safe-area",
+    "fui-nav-bar": "../../components/fui-nav-bar",
+    "fui-dialog": "../../components/fui-dialog"
+  }
+}

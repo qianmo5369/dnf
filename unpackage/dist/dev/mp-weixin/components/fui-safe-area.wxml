@@ -1,0 +1,1 @@
+<view class="{{['fui-safe__area-wrap', 'data-v-b5d0000c', a && 'fui-safe__area-weex']}}" style="{{'background:' + b}}"></view>

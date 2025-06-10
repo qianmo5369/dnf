@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "发起申诉",
+  "usingComponents": {
+    "tn-avatar": "../../uni_modules/tuniaoui-vue3/components/avatar/src/avatar",
+    "fui-upload": "../../components/fui-upload"
+  }
+}

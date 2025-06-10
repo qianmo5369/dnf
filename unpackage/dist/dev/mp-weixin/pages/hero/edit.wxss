@@ -1,0 +1,150 @@
+
+.page-container.data-v-ef99a890 {
+		background: #fff;
+		/* min-height: 100vh; */
+}
+.form.data-v-ef99a890 {
+		padding: 30rpx;
+}
+.form-item.data-v-ef99a890 {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 10rpx;
+		border-bottom: 1rpx solid #f2f2f2;
+}
+.label.data-v-ef99a890 {
+		font-size: 26rpx;
+		color: #333;
+		margin-bottom: 12rpx;
+		display: block;
+}
+.required.data-v-ef99a890 {
+		color: red;
+		margin-left: 8rpx;
+}
+.input.data-v-ef99a890,
+	.input-select.data-v-ef99a890 {
+		height: 100rpx;
+		/* background: #f7f8fa; */
+		border-radius: 12rpx;
+		padding: 20rpx;
+		font-size: 25rpx;
+		color: #333;
+		text-align: right;
+		/* border-radius: 50%; */
+}
+.input-select.data-v-ef99a890 {
+		color: #333 !important;
+		display: flex;
+		align-items: center;
+		/* border: 1px solid #ddd; */
+}
+.form-avatar.data-v-ef99a890 {
+		width: 66rpx;
+		height: 66rpx;
+		border-radius: 50%;
+		object-fit: cover;
+		margin-right: 10rpx;
+}
+.button-group.data-v-ef99a890 {
+		/* display: flex;
+		justify-content: space-between; */
+		/* margin-top: 40rpx; */
+		margin: 40rpx 0rpx;
+}
+.save-btn.data-v-ef99a890,
+	.delete-btn.data-v-ef99a890 {
+		flex: 1;
+		/* height: 80rpx; */
+		padding: 5rpx 0;
+		font-size: 28rpx;
+		border-radius: 10rpx;
+		text-align: center;
+		color: #fff;
+}
+.save-btn.data-v-ef99a890 {
+		background-color: #1677ff;
+		margin: 50rpx 0rpx;
+		/* margin-right: 20rpx; */
+}
+.delete-btn.data-v-ef99a890 {
+		background-color: #fff;
+		border: 1rpx solid #ccc;
+
+		color: #333;
+}
+.role-list-popup.data-v-ef99a890 {
+		margin: 20rpx 0rpx;
+		max-height: 400rpx;
+		padding: 20rpx;
+}
+.role-option.data-v-ef99a890 {
+		padding: 24rpx;
+		border-bottom: 1px solid #eee;
+		font-size: 28rpx;
+}
+.role-select-popup.data-v-ef99a890 {
+		position: relative;
+		/* height: 1000rpx; */
+		display: flex;
+		/* height: 80vh; */
+		flex-direction: column;
+		/* height: 800rpx;	 */
+		/* max-height: 1000rpx; */
+		/* min-height: 1000rpx; */
+}
+.popup-header.data-v-ef99a890 {
+		text-align: center;
+		font-size: 30rpx;
+		padding: 24rpx;
+		color: #3366ff;
+		border-bottom: 1rpx solid #eee;
+}
+.fui-icon__close.data-v-ef99a890 {
+		position: absolute;
+		top: 24rpx;
+		right: 54rpx;
+}
+.role-group-scroll.data-v-ef99a890 {
+		/* flex: 1; */
+		/* height: 800rpx;	 */
+		height: 70vh;
+		padding: 20rpx;
+}
+.role-group.data-v-ef99a890 {
+		margin-bottom: 20rpx;
+}
+.group-title.data-v-ef99a890 {
+		font-size: 28rpx;
+		font-weight: bold;
+		margin-bottom: 16rpx;
+		color: #333;
+}
+.role-list.data-v-ef99a890 {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		/* justify-content: space-between; */
+		/* gap: 20rpx 32rpx; */
+		border-bottom: 1rpx solid #f2f2f2;
+}
+.role-item.data-v-ef99a890 {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 120rpx;
+		margin: 20rpx 0rpx;
+}
+.role-avatar.data-v-ef99a890 {
+		width: 86rpx;
+		height: 86rpx;
+		border-radius: 50%;
+		object-fit: cover;
+}
+.role-name.data-v-ef99a890 {
+		margin-top: 8rpx;
+		font-size: 24rpx;
+		color: #444;
+		text-align: center;
+}

@@ -1,0 +1,147 @@
+
+.wrap.data-v-28c75cb3 {
+		position: relative;
+		height: 1000rpx;
+		display: flex;
+		flex-direction: column;
+		/* background: #fff; */
+}
+.btn.data-v-28c75cb3 {
+		flex: 1;
+		margin: 0 10rpx;
+		padding: 20rpx 0;
+		text-align: center;
+		border-radius: 10rpx;
+		font-size: 28rpx;
+}
+
+	/* 默认按钮 */
+.btn-default.data-v-28c75cb3 {
+		background-color: #fff;
+		color: #3366ff;
+		border: 1rpx solid #3366ff;
+}
+
+	/* 主要按钮 */
+.btn-primary.data-v-28c75cb3 {
+		background-color: #3366ff;
+		color: #fff;
+}
+
+	/* 弹窗头 */
+.popup-header.data-v-28c75cb3 {
+		text-align: center;
+		font-size: 30rpx;
+		padding: 24rpx;
+		color: #3366ff;
+		border-bottom: 1rpx solid #eee;
+}
+
+	/* 主体滚动区 */
+.popup-body.data-v-28c75cb3 {
+		height: 800rpx;	
+		padding: 0rpx 30rpx;
+		background-color: #f8f7f8;
+}
+
+	/* 原生 CSS Grid 两列布局 */
+.role-list.data-v-28c75cb3 {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-gap: 20rpx;
+		/* padding: 30rpx; */
+		margin-top: 30rpx;
+}
+
+	/* 单个角色卡片 */
+.role-card.data-v-28c75cb3 {
+		position: relative;
+		display: flex;
+		align-items: center;
+		background: #fff;
+		border-radius: 16rpx;
+		padding: 20rpx;
+		box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+		overflow: hidden;
+}
+	
+	/* 三角形背景——尖朝左下，位于右上角 */
+.card-active.data-v-28c75cb3::before {
+	  content: "";
+	  position: absolute;
+	  top: 0;
+	  right: 0;
+	  width: 90rpx;   /* 三角边长 */
+	  height: 60rpx;
+	  background-color: #409eff;
+	  -webkit-clip-path: polygon(
+	    100% 0%,    /* 顶点：右上 */
+	    100% 100%,  /* 底点：右下 */
+	    0% 0%       /* 左顶点：左上 */
+	  );
+	          clip-path: polygon(
+	    100% 0%,    /* 顶点：右上 */
+	    100% 100%,  /* 底点：右下 */
+	    0% 0%       /* 左顶点：左上 */
+	  );
+}
+	
+	/* 对勾 */
+.card-active.data-v-28c75cb3::after {
+	  content: "当前";
+	  position: absolute;
+	  top: 4rpx;
+	  right: 4rpx;
+	  font-size: 20rpx;
+	  /* line-height: 50rpx; */
+	  color: #fff;
+	  /* line-height: 2; */
+}
+	/* 文字区域 */
+.role-info.data-v-28c75cb3 {
+		margin-left: 20rpx;
+}
+.role-value.data-v-28c75cb3 {
+		font-size: 28rpx;
+		color: #333;
+		font-weight: bold;
+}
+.role-subtitle.data-v-28c75cb3 {
+		font-size: 24rpx;
+		color: #888;
+		margin-top: 8rpx;
+}
+
+	/* 底部按钮区 */
+.popup-footer.data-v-28c75cb3 {
+		/* position: absolute; */
+		/* bottom: 120rpx;
+		 */
+
+
+
+
+
+
+
+		left: 0;
+		width: 100%;
+
+		padding: 20rpx;
+		flex-direction: row;
+		display: flex;
+		padding: 20rpx;
+		background: #fff;
+		/* border-top: 1rpx solid #eee; */
+}
+.fui-icon__close.data-v-28c75cb3 {
+		position: absolute;
+		top: 24rpx;
+		right: 54rpx;
+}
+	/* .role-list > .role-card:nth-child(-n+2) {
+	  margin-top: 20rpx;
+	}
+	.role-list>.role-card:last-child {
+		margin-bottom: 150rpx;
+	} */

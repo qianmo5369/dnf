@@ -1,0 +1,371 @@
+
+.container{
+		height: 100%;
+		/* height: 100vh; */
+}
+.budget-container {
+		padding: 30rpx;
+		position: absolute;
+		height: 300rpx;
+		left: 0;
+		right: 0;
+		top: 0;
+		background-color: #f5f5f5;
+		z-index: 1;
+}
+.budget-card {
+		border-radius: 10rpx;
+		overflow: hidden;
+		border: 2rpx solid #00aaff;
+		font-size: 24rpx;
+}
+.budget-header {
+		background-color: #00aaff;
+		display: flex;
+		align-items: center;
+		padding: 20rpx 30rpx;
+		color: #fff;
+		font-size: 28rpx;
+}
+.header-left {
+		flex: 1;
+		display: flex;
+		align-items: center;
+}
+.header-icon {
+		margin-top: 2rpx;
+}
+.header-text {
+		margin: 0 14rpx;
+}
+.ratio-badge {
+		color: #00aaff;
+		background-color: #fff;
+		padding: 0 10rpx;
+		border-radius: 10rpx;
+		display: flex;
+		align-items: center;
+}
+.header-right {
+		display: flex;
+		align-items: center;
+}
+.budget-content {
+		flex-direction: column;
+		position: relative;
+		background-color: #fff;
+		display: flex;
+		padding: 20rpx 30rpx;
+		color: #333;
+		font-size: 28rpx;
+}
+.content-section {
+		display: flex;
+		flex-direction: column;
+}
+.content-item {
+		margin-top: 10rpx;
+}
+.content-item:first-child {
+		margin-top: 0;
+}
+.content-item.with-icon {
+		display: flex;
+		align-items: center;
+}
+.item-icon {
+		height: 40rpx;
+		margin-right: 20rpx;
+}
+.content-decoration {
+		height: 140rpx;
+		position: absolute;
+		right: 20rpx;
+		transform: translateY(-50%);
+		top: 50%;
+}
+.footer-container {
+		padding: 0 20rpx;
+		height: 110rpx;
+		background-color: #fff;
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		align-items: center;
+}
+.customer-service {
+		border: 2rpx solid #00aaff;
+		padding: 5rpx 20rpx;
+		display: flex;
+		align-items: center;
+		border-radius: 10rpx;
+}
+.customer-service-icon {
+		margin-right: 5rpx;
+		/* Added for spacing between icon and text */
+}
+.customer-service-text {
+		color: #00aaff;
+}
+.action-buttons {
+		display: flex;
+		align-items: center;
+		flex: 1;
+		justify-content: flex-end;
+}
+.action-button {
+		border-radius: 10rpx;
+		padding: 10rpx 30rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #fff;
+}
+.dispute-button {
+		background-color: #f71212;
+}
+.confirm-button {
+		background-color: #00aaff;
+		margin-left: 30rpx;
+}
+.timeline-container {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 330rpx;
+		bottom: 110rpx;
+		overflow-y: auto;
+		background-color: #fff;
+		padding: 30rpx;
+}
+
+	/* Timeline Item Styles */
+.timeline-content-wrapper {
+		display: flex;
+}
+.timeline-icon-container {
+		display: flex;
+		width: 50rpx;
+		justify-content: center;
+}
+.timeline-icon-vertical {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+}
+.first-icon {
+		position: relative;
+}
+.timeline-dot {
+		position: relative;
+		background-color: #00aaff;
+		width: 20rpx;
+		height: 20rpx;
+		border-radius: 300rpx;
+}
+.timeline-connector {
+		width: 2px;
+		background-color: #f5f5f5;
+		flex: 1;
+		margin-top: -10rpx;
+}
+.timeline-details {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+}
+.timeline-header {
+		display: flex;
+		flex: 1;
+		align-items: center;
+}
+.header-text {
+		flex: 1;
+}
+.timeline-time {
+		color: #999;
+		font-size: 24rpx;
+}
+
+	/* Card Styles */
+.timeline-card {
+		font-size: 26rpx;
+		margin-top: 20rpx;
+		margin-left: 15rpx;
+		margin-bottom: 20rpx;
+		padding: 20rpx;
+		background-color: #f5f5f5;
+		border-radius: 10rpx;
+}
+.card-content {
+		color: #333;
+		margin-top: 10rpx;
+}
+.card-row {
+		margin-top: 10rpx;
+}
+.image-row {
+		display: flex;
+		align-items: center;
+}
+.card-image {
+		display: flex;
+		align-items: center;
+}
+.settlement-img{
+		border-radius: 10rpx;
+		width: 150rpx;
+		height: 100rpx;
+		margin-left: 20rpx;
+}
+.note-row {
+		display: flex;
+		align-items: center;
+}
+.note-text {
+		color: #000;
+		flex: 1;
+}
+.highlight-red {
+		color: #ff0000;
+}
+
+	/* Character Info Styles */
+.character-info {
+		display: flex;
+		align-items: center;
+}
+.character-avatar {
+		border-radius: 300rpx;
+		width: 80rpx;
+		height: 80rpx;
+		margin-right: 10rpx;
+}
+.character-details {
+		display: flex;
+		flex-direction: column;
+}
+.character-name-row {
+		display: flex;
+		align-items: center;
+}
+.character-name {
+		color: #000;
+		font-size: 30rpx;
+}
+.team-tag {
+		padding: 4rpx 20rpx;
+		background-color: #aa0000;
+		border-radius: 10rpx;
+		color: #fff;
+		margin-left: 20rpx;
+		font-size: 24rpx;
+}
+.character-nickname {
+		color: #999;
+}
+
+	/* Platform Info Styles */
+.platform-header {
+		display: flex;
+		align-items: center;
+		border-bottom: 2rpx #999 solid;
+		padding-bottom: 15rpx;
+}
+.platform-avatar {
+		border-radius: 300rpx;
+		width: 50rpx;
+		height: 50rpx;
+		margin-right: 10rpx;
+}
+.platform-info {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+}
+.platform-info-row {
+		display: flex;
+		align-items: center;
+		flex: 1;
+}
+.platform-title {
+		color: #000;
+		font-size: 30rpx;
+		flex: 1;
+}
+.platform-date {
+		color: #999;
+		margin-left: 20rpx;
+		font-size: 24rpx;
+}
+.confirmation-list {
+		font-size: 26rpx;
+		margin-top: 20rpx;
+		margin-left: 15rpx;
+		margin-bottom: 20rpx;
+		background-color: #f5f5f5;
+		border-radius: 10rpx;
+}
+.confirmation-item {
+		display: flex;
+		align-items: center;
+		padding: 10rpx 20rpx;
+}
+.confirmation-avatar {
+		width: 70rpx;
+		height: 70rpx;
+		border-radius: 300rpx;
+}
+.confirmation-details {
+		margin-left: 20rpx;
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+}
+.confirmation-name-row {
+		display: flex;
+		align-items: center;
+		font-size: 28rpx;
+}
+.confirmation-team-tag {
+		margin-left: 10rpx;
+		padding: 0rpx 15rpx;
+		border-radius: 10rpx;
+		background-color: #aa0000;
+		color: #fff;
+}
+.confirmation-comment {
+		color: #999;
+}
+.confirmation-status {
+		color: #aa0000;
+}
+.green{
+		color: green;
+}
+
+	/* Notice Card Styles */
+.notice-card {
+		font-size: 26rpx;
+		margin-top: 20rpx;
+		margin-left: 15rpx;
+		margin-bottom: 20rpx;
+		background-color: #f5f5f5;
+		border-radius: 10rpx;
+}
+.notice-content {
+		display: flex;
+		align-items: center;
+		padding: 10rpx 20rpx;
+}
+.notice-icon {
+		margin-right: 20rpx;
+}
+.notice-text {
+		color: #333;
+}
+.header-text1 {
+		margin: 0 15rpx;
+}
