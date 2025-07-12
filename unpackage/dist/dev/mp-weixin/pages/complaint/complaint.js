@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const util_ws = require("../../util/ws.js");
 if (!Math) {
   (TnAvatar + fuiSteps + fuiSafeArea)();
 }
@@ -105,7 +106,7 @@ const _sfc_main = {
       });
       if (Array.isArray(data.replies)) {
         data.replies.forEach((reply) => {
-          common_vendor.index.__f__("log", "at pages/complaint/complaint.vue:249", reply);
+          common_vendor.index.__f__("log", "at pages/complaint/complaint.vue:254", reply);
           result.push({
             type: "reply",
             title: "回复",
@@ -140,11 +141,14 @@ const _sfc_main = {
           content: "撤回申诉"
         });
       }
-      common_vendor.index.__f__("log", "at pages/complaint/complaint.vue:288", result);
+      common_vendor.index.__f__("log", "at pages/complaint/complaint.vue:293", result);
       steps.value = result;
     };
     common_vendor.onMounted(() => {
       getComplaintDetail();
+      util_ws.ws.on("complaintUpdated", (msg) => {
+        buildSteps(msg.data);
+      });
     });
     return (_ctx, _cache) => {
       return common_vendor.e({
@@ -213,11 +217,12 @@ const _sfc_main = {
               url: item.hero_avatar
             }),
             t: common_vendor.t(item.hero_name),
-            v: common_vendor.t(item.reply_time),
-            w: common_vendor.t(item.content),
-            x: item.images
+            v: common_vendor.t(item.hero_nickname),
+            w: common_vendor.t(item.reply_time),
+            x: common_vendor.t(item.content),
+            y: item.images
           }, item.images ? {
-            y: common_vendor.f(item.images, (replyImg, i, i1) => {
+            z: common_vendor.f(item.images, (replyImg, i, i1) => {
               return {
                 a: common_vendor.o(($event) => previewImage(replyImg), i),
                 b: replyImg,
@@ -225,16 +230,16 @@ const _sfc_main = {
               };
             })
           } : {}, {
-            z: index
+            A: index
           }) : {}, {
-            A: item.type === "tips"
+            B: item.type === "tips"
           }, item.type === "tips" ? {} : {}, {
-            B: item.type === "status"
+            C: item.type === "status"
           }, item.type === "status" ? {
-            C: common_vendor.t(item.content)
+            D: common_vendor.t(item.content)
           } : {}, {
-            D: i0,
-            E: s0
+            E: i0,
+            F: s0
           });
         }, {
           name: "d",

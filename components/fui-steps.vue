@@ -73,7 +73,7 @@
 						:class="{'fui-steps__text-row':direction==='row','fui-steps__color':(index<current && !getActiveColor) || (index===current && !processColor && !getActiveColor)}"
 						
 						:style="{color:index<=current?getColor(index,current):color,fontSize:size+'rpx',fontWeight:fontWeight}">
-						{{item[title]}}1111
+						{{item[title]}}
 					</text>
 					<!-- <text class="fui-steps__descr"
 						:class="{'fui-steps__text-row':direction==='row','fui-steps__color':(index<current && !getActiveColor) || (index===current && !processColor && !getActiveColor)}"

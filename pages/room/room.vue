@@ -1,10 +1,54 @@
 <template>
 	<view class="room-container">
-		<fui-dialog :show="dialogShow" :content="content" :confirmText="confirmText" maskClosable @click="onClick"
-			@close="onClose"></fui-dialog>
+		<fui-dialog :show="dialogShow" :content="content" :title="title" :confirmText="confirmText" maskClosable
+			@click="onClick" @close="onClose"></fui-dialog>
 		<TnModal ref="modalRef" />
 
-		<fui-bottom-popup :show="phrasShow" zIndex="4000">
+		<view v-if="rechargeShow" style="z-index: 1000001;">
+			<Recharge v-model="rechargeShow" :orderInfo="orderInfo"></Recharge>
+		</view>
+
+		<TnPopup z-index="20076" :model-value="contentShow" width="90%" height="70vh" borderRadius="16rpx">
+			<Parse v-if="contentShow" v-model="contentShow" :contentId="contentId"></Parse>
+		</TnPopup>
+
+
+		<TnPopup :model-value="gameLinkShow" width="80%" height="450rpx" borderRadius="16rpx">
+			<view class="game-link-card-box">
+				<view class="game-link-popup-header">创建游戏房间链接</view>
+				<view class="fui-icon__close" @tap="gameLinkShow = false;">
+					<TnIcon name="close" size="35" color="#999" />
+				</view>
+				<view class="game-link-content">
+					<view class="link-input-box">
+						<input class="game-link-input" v-model="gameLinkInput" placeholder="请输入游戏房间链接" type="text" />
+						<view class="paste-btm" @tap="pasteText">
+							粘贴链接
+						</view>
+					</view>
+					<view class="link-desc">
+						<view>
+							只需要三步，15秒告别繁琐邀请流程
+						</view>
+						<view>
+							(匹配成功后，可再次填写)
+						</view>
+					</view>
+				</view>
+				<view class="link-btn-layout">
+					<view class="link-btn-close" @tap="handleContent(6)">
+						如何填写?
+					</view>
+					<view class="line"></view>
+					<view class="link-btn" @tap="updateGameUrl">
+						确认填写
+					</view>
+				</view>
+
+			</view>
+		</TnPopup>
+
+		<fui-bottom-popup :show="phrasShow" :zIndex="4000">
 			<view class="phras-popup">
 				<view class="phras-header">常用语</view>
 				<view class="fui-icon__close" @tap="phrasShow  = false">
@@ -22,34 +66,7 @@
 				</view>
 			</view>
 		</fui-bottom-popup>
-
-		<!-- 结算图上传 -->
-		<!-- <fui-bottom-popup :show="completeShow" zIndex="8000">
-			<view class="complete-popup">
-				<view class="popup-header">完成结算</view>
-				<view class="fui-icon__close" @tap="completeShow  = false">
-					<TnIcon name="close" color="#000" />
-				</view>
-				<view class="popup-alert">
-					上传截图，可作为纠纷评判依据
-				</view>
-				<view class="form-group">
-					<text class="label required">拍卖结算图或者通关翻牌图</text>
-					<view class="upload-box">
-						<fui-upload borderColor="#eee" background="#Fff" radius="10" immediate width="500" height="300"
-							:url="uploadUrl" :max="2" ref="uploadRef" @success="uploadSuccess"
-							@error="uploadError"></fui-upload>
-					</view>
-				</view>
-				<view class="popup-footer">
-					<view class="submit-btn" @tap="doCompleteRoom">确定完成</view>
-				</view>
-			</view>
-
-		</fui-bottom-popup> -->
-
-
-		<fui-bottom-popup :show="completeShow" zIndex="8000">
+		<fui-bottom-popup :show="completeShow" :zIndex="8000">
 			<view class="complete-popup">
 
 				<!-- 标题 -->
@@ -58,8 +75,16 @@
 					<TnIcon name="close" color="#000" />
 				</view>
 
+
+				<view class="popup-alert">
+					<TnIcon name="tip-fill" color="#f53f3f" />
+					<text v-if="roomData.room?.settle_model != 'leilong'" class="tn-ml">上传截图，可作为纠纷评判依据</text>
+					<text class="tn-ml" v-else>没有达到13阶段直接解散</text>
+				</view>
+
+
 				<!--  泰拉车结算表单 -->
-				<template v-if="roomData.room?.is_terache">
+				<template v-if="roomData.room?.settle_model == 'terache'">
 					<view class="form-group">
 						<text class="label required">是否金币车</text>
 						<view class="circle-radio-group">
@@ -131,24 +156,41 @@
 						<!-- 动态计算展示 -->
 						<view class="form-group" style="flex-direction: column; align-items: flex-start;">
 							<text class="label">结算参考</text>
-							<view style="padding-top: 10rpx;">
-								<text>➤ 支出泰拉：{{ realTera }} 万</text><br />
-								<text>➤ 泰拉收益：{{ cashProfit }} 元</text>
+							<view class="Profit">
+								<text>支出泰拉:{{ realTera }} 万 | </text>
+								<text>收益:{{ cashProfit }} 元 | </text>
+								<text>卡片分红:{{cardProfit}} </text>
+							</view>
+							<view class="sumProfit">
+								本次预估收益:{{sumProfit}}元
 							</view>
 						</view>
 
 					</view>
 				</template>
 
-				<!-- ✅ 普通副本：仅提示上传截图 -->
-				<template v-else>
-					<view class="popup-alert">上传截图，可作为纠纷评判依据</view>
-				</template>
 
-				<!-- ✅ 公共上传区域 -->
-				<view class="form-group" style="flex-direction: column; align-items: flex-start;">
+				<!-- 雷龙结算表单 -->
+				<view v-if="roomData.room?.settle_model === 'leilong'">
+					<view class="form-group" style="flex-direction: column; align-items: flex-start;">
+						<view class="label required">请选择通过阶段</view>
+						<view class="circle-radio-group" style="margin: 10rpx 0rpx;">
+							<view v-for="item in leilongStages" :key="item.value" class="circle-radio-item"
+								:class="{ selected: leilongStage === item.value }" @tap="leilongStage = item.value">
+								<view class="circle-outer">
+									<view class="circle-inner" v-if="leilongStage === item.value" />
+								</view>
+								<text>{{ item.label }}</text>
+							</view>
+						</view>
+					</view>
+				</view>
+
+				<!-- 公共上传区域 -->
+				<view v-if="!(roomData.room?.settle_model === 'leilong' && leilongStage === 'disband')" class="form-group"
+					style="flex-direction: column; align-items: flex-start;">
 					<text class="label required" style="margin-bottom: 10rpx;">上传结算截图</text>
-					<fui-upload borderColor="#eee" background="#fff" radius="10" immediate width="500" height="300"
+					<fui-upload borderColor="#eee" background="#fff" radius="10" immediate width="320" height="200"
 						:url="uploadUrl" :max="2" ref="uploadRef" @success="uploadSuccess" @error="uploadError" />
 				</view>
 
@@ -172,7 +214,7 @@
 						v-if="roomData.room?.channel === 'QQ'" mode="aspectFill" />
 					<text class="zone-tag" v-if="roomData.room?.channel === 'wechat'">微信区</text>
 					<text class="zone-tag" v-if="roomData.room?.channel === 'QQ'">QQ区</text>
-					<text class="zone-title">{{roomData.room?.mode_title}} -{{roomData.room?.id}}</text>
+					<text class="zone-title">{{roomData.room?.mode_title}} {{roomData.room?.id}}</text>
 				</view>
 			</fui-nav-bar>
 
@@ -182,18 +224,52 @@
 			<!-- <image class="room-bg" src="https://dnf.hanyunkeji.cn/static/room/20.png" mode="aspectFill" /> -->
 			<view class="room-overlay">
 				<view class="room-status">
-					<view class="room-tag">暂未匹配游戏房间链接 <text class="i">i</text></view>
-					<view class="room-time" v-if="roomData && roomData.room?.status != 'completed'">
-						<text v-if="roomData && roomData.room?.status === 'waiting'">等待中 {{ waitingTimeText }}</text>
-						<text v-if="roomData && roomData.room?.status === 'in_progress'" style="color: green">进行中
-							{{ progressTimeText }}</text>
+					<!-- 先判断基础条件：仅当 channel==='wechat' 且 map_code 为 'terache' 或 'baoche' -->
+					<view
+						v-if="roomData.room?.channel === 'wechat' && ['terache','baoche'].includes(roomData.room?.settle_model)">
 
+						<!-- 未匹配链接 -->
+						<view class="room-tag" v-if="!roomData.room?.game_link_status" @tap="handleContent(6)">
+
+							<image class="room-tag-icon" src="https://dnf.hanyunkeji.cn/static/01.png" mode="aspectFit">
+							</image>
+							<text class="room-tag-label">暂未匹配游戏房间链接</text>
+						</view>
+						<!-- 已配置链接，用 else 或者 else-if -->
+						<view @tap="gameLinkShow =true" class="room-tag" v-else>
+							<image class="room-tag-icon" src="https://dnf.hanyunkeji.cn/static/game1.png"
+								mode="aspectFit"></image>
+							<text class="room-tag-label">游戏房间链接已经配置</text>
+						</view>
+					</view>
+
+					<!-- 其他 settle_model 的标签保持不变 -->
+					<view class="room-tag" v-if="roomData.room?.settle_model === 'leilong'">
+						<image class="room-tag-icon" src="https://dnf.hanyunkeji.cn/static/coin.png" mode="aspectFit">
+						</image>
+						<text class="room-tag-label">
+							13阶{{ roomData.room?.thirteen_stage_coin }}个币 | 斩杀{{ roomData.room?.finish_stage_coin }}个币
+						</text>
+					</view>
+					<view class="room-tag"
+						v-if="roomData.room?.settle_model === 'normal'">
+
+						<image class="room-tag-icon" src="https://dnf.hanyunkeji.cn/static/coin.png" mode="aspectFit">
+						</image>
+						<text class="room-tag-label">{{roomData.room?.leader_pay}}个 助战币</text>
+					</view>
+
+					<view class="room-time" v-if="roomData && roomData.room?.status !== 'completed'">
+						<text v-if="roomData.room?.status === 'waiting'">等待中 {{ waitingTimeText }}</text>
+						<text v-else-if="roomData.room?.status === 'in_progress'" style="color: green">
+							进行中 {{ progressTimeText }}
+						</text>
 					</view>
 				</view>
+
+
 			</view>
 		</view>
-
-
 		<view class="room-cards">
 			<view class="role-card" :class="pos.code" v-for="(pos, index) in roomData.positions" :key="pos.id"
 				@tap="onSelectPosition(pos)" @longpress="onKickMember(pos)">
@@ -231,61 +307,93 @@
 
 			</view>
 		</view>
-		<view class="room-chat">
-			<scroll-view class="room-chat" scroll-y ref="scrollViewRef" :scroll-into-view="scrollTo"
-				:scroll-with-animation="true">
-				<view class="chat-msg" v-for="(msg, index) in msgList" :key="index" :id="'msg-' + index">
-					<view class="chat-header">
-						<TnAvatar size="60rpx" :url="msg.hero_avatar" />
-						<view class="chat-meta">
-							<view class="chat-nickname">
-								<text class="chat-role" :class="msg.role_code">
-									{{msg.role_title}}
-								</text>
-								<text class="chat-tag" :class="getRoleColor(msg.role_code)">
-									{{ msg.hero_nickname }}
-								</text>
-
+		
+		
+		
+		<view class="message-wrap">
+			<scroll-view scroll-y enable-flex class="scroll-list" scroll-with-animation  :scroll-top="scrollTop">
+				<view class="message-item-wrap">
+					<view class="team-tips">
+						<view class="team-tips-item" v-for="(tips, index0) in roomData.room?.config_json?.tips"
+							:key="index0" v-if="roomData.room?.config_json && roomData.room?.config_json.tips">
+							{{ tips }}
+						</view>
+					
+					</view>
+					<view class="chat-msg" v-for="(msg, index) in msgList" :key="index" :id="'msg-' + index">
+						<view class="chat-header">
+							<TnAvatar size="60rpx" :url="msg.hero_avatar" />
+							<view class="chat-meta">
+								<view class="chat-nickname">
+									<text class="chat-role" :class="msg.role_code">
+										{{msg.role_title}}
+									</text>
+									<text class="chat-tag" :class="getRoleColor(msg.role_code)">
+										{{ msg.hero_nickname }}
+									</text>
+					
+								</view>
+								<text class="chat-text">{{ msg.content }}</text>
 							</view>
-							<text class="chat-text">{{ msg.content }}</text>
 						</view>
 					</view>
 				</view>
-				<view id="chat-bottom"></view>
 			</scroll-view>
 		</view>
+		
+		
+		
 
 
 		<!-- 右侧功能按钮区域 -->
-		<view class="room-actions" v-if="roomData.room && isRoomOperator">
-
-			<!-- 等待中状态才能开始游戏 -->
-			<view class="room-action start-btn" v-if="roomData.room.status === 'waiting'" @tap="onStartGame()">
-				<text>开始</text>
-			</view>
-
-			<!-- 进行中状态可以上传结算图 -->
-			<view class="room-action end-btn" v-if="roomData.room.status === 'in_progress'" @tap="completeShow = true">
-				<text>完成</text>
-			</view>
-
-			<!-- 等待中可刷新 -->
-			<view class="room-action refresh-btn" v-if="roomData.room.status === 'waiting'" @tap="refresh()">
-				<text>刷新</text>
-			</view>
-
-			<!-- 进行中可重置 -->
-			<view class="room-action reset-btn" v-if="roomData.room.status === 'in_progress'" @tap="onResetToWait()">
-				<view>重新</view>
-				<view>等待</view>
-			</view>
+		<view class="room-actions" >
+			<template v-if="roomData.room && isRoomOperator">
+				
+				<!-- 等待中状态才能开始游戏 -->
+				<view class="room-action start-btn" v-if="roomData.room?.status === 'waiting'" @tap="onStartGame()">
+					<text>开始</text>
+				</view>
+				
+				<!-- 进行中状态可以上传结算图 -->
+				<view class="room-action end-btn" v-if="roomData.room?.status === 'in_progress'" @tap="completeShow = true">
+					<text>完成</text>
+				</view>
+				
+				<!-- 等待中可刷新 -->
+				<view class="room-action refresh-btn" v-if="roomData.room?.status === 'waiting'" @tap="refresh()">
+					<text>刷新</text>
+				</view>
+				
+				
+				<!-- 进行中可重置 -->
+				<view class="room-action reset-btn" v-if="roomData.room?.status === 'in_progress'" @tap="onResetToWait()">
+					<view>重新</view>
+					<view>等待</view>
+				</view>
+				
+				
+			</template>
+			<template v-if="roomData.room?.status === 'in_progress' && roomData.room?.game_link && roomData.room?.joined_role_code != null">
+				<view class="room-action game-link-btn"  @tap="onJoinGameRoom()">
+					<view>进入</view>
+					<view>游戏</view>
+				</view>
+			</template>
 
 		</view>
+		
+		
+		
+		
+		
+		
+		
+		
 
 		<!-- </view> -->
 		<!-- 常用语和输入栏 -->
 		<view class="room-footer"
-			v-if="roomData.room && roomData.room['status'] != 'completed' && roomData.room['status'] != 'disbanded' && roomData.room['status'] != 'settling' ">
+			v-if="roomData.room && roomData.room?.status != 'completed' && roomData.room?.status != 'disbanded' && roomData.room?.status != 'settling' ">
 			<view class="input-layout">
 				<view class="chat-shortcuts">
 					<view class="shortcut" @tap="checkMemberAccess(handlePhras)">常用语</view>
@@ -319,52 +427,67 @@
 			<image class="bottom-status-img" src="https://dnf.hanyunkeji.cn/static/room/200.png" mode="aspectFit">
 			</image>
 		</view>
-
-		<view class="room-summary"
-			v-if="roomData.room  &&   roomData.room['status'] == 'completed' || roomData.room['status'] == 'settling' ">
-			<view class="summary-left">
-				<view class="summary-item">
-					<text class="summary-label">结算图:</text>
-					<view class="images">
-						<image @tap="previewImage(img)" v-for="(img, idx) in roomData.room.settlement_images" :key="idx"
-							:src="img" class="settle-img" mode="aspectFill" />
+		<view>
+			<view class="room-summary"
+				v-if="roomData.room  &&   roomData.room['status'] == 'completed' || roomData.room['status'] == 'settling' ">
+				<view class="summary-left">
+					<view class="summary-item">
+						<text class="summary-label">结算图:</text>
+						<view class="images">
+							<image @tap="previewImage(img)" v-for="(img, idx) in roomData.room.settlement_images" :key="idx"
+								:src="img" class="settle-img" mode="aspectFill" />
+						</view>
+					</view>
+					<view class="summary-item">
+						<text class="summary-label">组队时间:</text>
+						<text class="value">{{ roomData.room.start_time }}</text>
+					</view>
+					<view class="summary-item">
+						<text class="summary-label">累计用时:</text>
+						<text class="value">{{ roomData.room.teamup_time }}</text>
 					</view>
 				</view>
-				<view class="summary-item">
-					<text class="summary-label">组队时间:</text>
-					<text class="value">{{ roomData.room.start_time }}</text>
-				</view>
-				<view class="summary-item">
-					<text class="summary-label">累计用时:</text>
-					<text class="value">{{ roomData.room.teamup_time }}</text>
-				</view>
-			</view>
-
-			<!-- 右下角印章和客服 -->
-			<view class="summary-right">
-				<image v-if="roomData.room && roomData.room['status'] == 'completed'"
-					src="https://dnf.hanyunkeji.cn/static/room/300.png" class="stamp" />
-					
+			
+				<!-- 右下角印章和客服 -->
+				<view class="summary-right">
+					<image v-if="roomData.room && roomData.room['status'] == 'completed'"
+						src="https://dnf.hanyunkeji.cn/static/room/300.png" class="stamp" />
 					<image v-if="roomData.room && roomData.room['status'] == 'settling'"
 						src="https://dnf.hanyunkeji.cn/static/room/400.png" class="stamp" />
-				<view class="actions" v-if="roomData.room?.is_member">
-					<view class="btn-outline" v-if="roomData.room?.joined_role_code == 'leader'">
-						<text v-if="roomData.room?.complaint_status.can_complain"
-							@tap="linkTo(`/pages/complaint/send?room_id=${roomData.room?.id}`)">发起申诉</text>
-						<text
-							@tap="linkTo(`/pages/complaint/complaint?complaint_id=${roomData.room?.complaint_status.complaint_id}`)"
-							v-if="roomData.room?.complaint_status.complaint_status == 'pending' || roomData.room?.complaint_status.complaint_status == 'processing'">申诉中</text>
-						<text
-							@tap="linkTo(`/pages/complaint/complaint?complaint_id=${roomData.room?.complaint_status.complaint_id}`)"
-							v-if="roomData.room?.complaint_status.complaint_status == 'resolved' || roomData.room?.complaint_status.complaint_status == 'cancelled'">申诉完成</text>
+					<image v-if="roomData.room && roomData.room['status'] == 'settled'"
+						src="https://dnf.hanyunkeji.cn/static/success_3.png" class="stamp" />
+					<view class="actions" v-if="roomData.room?.is_member">
+						<view class="btn-outline"
+							v-if="roomData.room?.joined_role_code == 'leader' || roomData.room?.joined_role_code == 'baoche'">
+							<text v-if="roomData.room?.complaint_status.can_complain"
+								@tap="linkTo(`/pages/complaint/send?room_id=${roomData.room?.id}`)">发起申诉</text>
+							<text
+								@tap="linkTo(`/pages/complaint/complaint?complaint_id=${roomData.room?.complaint_status.complaint_id}`)"
+								v-if="roomData.room?.complaint_status.complaint_status == 'pending' || roomData.room?.complaint_status.complaint_status == 'processing'">申诉中</text>
+							<text
+								@tap="linkTo(`/pages/complaint/complaint?complaint_id=${roomData.room?.complaint_status.complaint_id}`)"
+								v-if="roomData.room?.complaint_status.complaint_status == 'resolved' || roomData.room?.complaint_status.complaint_status == 'cancelled'">申诉完成</text>
+						</view>
+						<view class="btn-outline btn-default"
+							v-if="roomData.room?.is_terache && roomData.room['status'] == 'settling'">
+							<text @tap="linkTo(`/pages/complaint/index?room_id=${roomData.room?.id}`)">查看结算单</text>
+						</view>
+						<view class="btn-outline btn-default"
+							v-if="roomData.room?.is_terache && roomData.room['status'] == 'completed'">
+							<text @tap="linkTo(`/pages/complaint/index?room_id=${roomData.room?.id}`)">结算完成</text>
+						</view>
+						<!-- <view class="btn-primary">联系客服</view> -->
+						<button class="btn-default btn-primary" open-type="contact">联系客服</button>
+			
 					</view>
-					<view class="btn-outline" v-if="roomData.room?.is_terache || roomData.room['status'] == 'settling'">
-						<text @tap="linkTo(`/pages/complaint/index?room_id=${roomData.room?.id}`)">查看结算单</text>
-					</view>
-					<view class="btn-primary">联系客服</view>
 				</view>
+				
+				
+				
 			</view>
+			<fui-safe-area background="none"></fui-safe-area>
 		</view>
+		
 	</view>
 </template>
 
@@ -380,7 +503,8 @@
 		watch,
 		onMounted,
 		onUnmounted,
-		nextTick
+		nextTick,
+		reactive
 
 	} from 'vue'
 	import {
@@ -392,15 +516,18 @@
 	} from "@/util/env";
 	import ws from '@/util/ws.js'
 	import faceList from './emoji.js'
+	import Recharge from "@/components/recharge.vue";
 	import fuiBottomPopup from "@/components/fui-bottom-popup.vue"
 	import TnAvatar from '@/uni_modules/tuniaoui-vue3/components/avatar/src/avatar.vue'
 	import fuiSafeArea from "@/components/fui-safe-area.vue"
 	import fuiNavBar from "@/components/fui-nav-bar.vue"
 	import fuiDialog from "@/components/fui-dialog.vue"
+	import TnPopup from '@/uni_modules/tuniaoui-vue3/components/popup/src/popup.vue';
+	import Parse from "@/components/parse.vue"
 	const uploadRef = ref(null)
 	const uploadUrl = baseUrl + '/common/upload'
 	const uploadStatus = ref(false);
-	const settlementImage = ref(null); // 游戏结算图
+	const settlementImage = ref([]); // 游戏结算图
 	const dialogShow = ref(false);
 	const completeShow = ref(false);
 	const title = ref(null)
@@ -418,24 +545,38 @@
 	const teraCost = ref('')
 	const hasCard = ref('0')
 	const cardPrice = ref('')
+	const gameLinkInput = ref(null)
+	const rechargeShow = ref(false)
+	const orderInfo = ref({})
+	const WebSocketStatus = ref(true)
+	
+	const translateY = reactive(520)
 
 	const teraRatio = computed(() => {
-		return parseFloat(4500)
-		// return parseFloat(roomData.value.room?.tera_ratio || 5000)
+		// return parseFloat(4500)
+		return parseFloat(roomData.value.room?.tera_ratio || 5000)
 	})
+	const scrollTop = ref();
+	const contentId = ref(null)
+	const contentShow = ref(false)
+	const handleContent = (id) => {
+		contentId.value = id;
+		contentShow.value = true;
+	}
 
 
 	// 计算卖家自己分得（六人平分）
 	const sellerTera = computed(() => {
 		const cost = parseFloat(teraCost.value || 0)
-		return cost > 0 ? (cost * 0.9 / 6).toFixed(2) : '0.00'
+		return cost > 0 ? (cost * 0.95 / 6).toFixed(2) : '0.00'
 	})
 
 	// 实际支出泰拉
 	const realTera = computed(() => {
 		const cost = parseFloat(teraCost.value || 0)
 		const self = parseFloat(sellerTera.value || 0)
-		const result = cost * 0.9 - self
+		const cardcost = parseFloat(cardPrice.value || 0)
+		const result = cost * 0.95 - self - (cardcost * 0.9)
 		return result > 0 ? result.toFixed(2) : '0.00'
 	})
 
@@ -446,10 +587,54 @@
 		return tera > 0 ? ((tera * 10000) / ratio).toFixed(2) : '0.00'
 	})
 
+	const cardProfit = computed(() => {
+		const cost = parseFloat(teraCost.value || 0)
+		const cardcost = parseFloat(cardPrice.value || 0)
+		return ((cost * 0.95 / 6 * 2 * 5 - (cost * 0.95 - cost * 0.95 / 6 - cardcost * 0.9) * 2) * 0.2).toFixed(2)
+
+	})
+
+	const sumProfit = computed(() => {
+		const result = parseFloat(cashProfit.value) + parseFloat(cardProfit.value);
+		return result.toFixed(2)
+
+	})
+
+	const leilongStages = ref([{
+			label: '解散房间',
+			value: 'disband'
+		},
+		{
+			label: '13阶段',
+			value: 'stage13'
+		},
+		{
+			label: '斩杀',
+			value: 'kill'
+		}
+	])
+
+	const leilongStage = ref('kill')
+	const gameLinkShow = ref(false)
+	const gameLink = ref(null)
+	
+	const onJoinGameRoom = () => {
+	    wx.navigateToMiniProgram({
+	      shortLink: roomData.value.game_link,
+	      fail: function (e) {
+			  uni.showToast({
+			  	title: "启动失败，请检查链接是否配置正确",
+			  	icon: 'none'
+			  })
+	       
+	      }
+	    })
+	  }
 
 
-
-
+	onShow(() => {
+		getRoomData()
+	})
 	onLoad((params) => {
 		if (params.share_uid) {
 			uni.setStorageSync('share_uid', params.share_uid)
@@ -464,52 +649,98 @@
 				icon: 'none'
 			})
 		}
+
+
+
+
 	})
 
-	const waitingTimeText = ref('')
-	const progressTimeText = ref('')
-	let timer = null
-
-	// room 为接口返回的 room 数据
+	const waitingTimeText = ref('00:00:00')
+	const progressTimeText = ref('00:00:00')
+	let timer = null;
+	
 	const startTime = ref(0)
 	const status = ref('')
-	const now = ref(Date.now())
-
+	
+	
+	const startTimestamp = ref(0)
+	const roomStatus = ref('')
+	// let timer = null
+	
+	// 格式化秒为 HH:mm:ss
 	const formatTime = (seconds) => {
-		const h = String(Math.floor(seconds / 3600)).padStart(2, '0')
-		const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')
-		const s = String(seconds % 60).padStart(2, '0')
-		return `${h}:${m}:${s}`
+	  const h = String(Math.floor(seconds / 3600)).padStart(2, '0')
+	  const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')
+	  const s = String(seconds % 60).padStart(2, '0')
+	  return `${h}:${m}:${s}`
 	}
-
-
+	
+	
+	// const formatTime = (seconds) => {
+	// 	const h = String(Math.floor(seconds / 3600)).padStart(2, '0')
+	// 	const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')
+	// 	const s = String(seconds % 60).padStart(2, '0')
+	// 	return `${h}:${m}:${s}`
+	// }
+	
+	// const updateTimer = () => {
+	// 	const current = Math.floor(Date.now() / 1000)
+		
+	// 	console.log(current);
+		
+	// 	const start = Number(startTime.value || 0)
+	// 	console.log(start);
+	// 	const seconds = Math.max(0, current - start)
+	// console.log(seconds);
+	// 	if (status.value === 'waiting') {
+	// 		waitingTimeText.value = formatTime(seconds)
+	// 	} else if (status.value === 'in_progress') {
+	// 		progressTimeText.value = formatTime(seconds)
+	// 	}
+	// }
+	
+	
+	// 每秒更新显示时间
 	const updateTimer = () => {
-		const current = Math.floor(Date.now() / 1000)
-		const start = Number(startTime.value || 0)
-		const seconds = Math.max(0, current - start)
-
-		if (status.value === 'waiting') {
-			waitingTimeText.value = formatTime(seconds)
-		} else if (status.value === 'in_progress') {
-			progressTimeText.value = formatTime(seconds)
-		}
+	  const current = Math.floor(Date.now() / 1000)
+	  const start = startTimestamp.value
+	  const elapsed = Math.max(0, current - start)
+	  const formatted = formatTime(elapsed)
+	
+	  // console.log('[Timer Debug] 当前状态:', status.value)
+	  // console.log('[Timer Debug] 当前时间戳:', current)
+	  // console.log('[Timer Debug] 开始时间戳:', start)
+	  // console.log('[Timer Debug] 已过秒数:', elapsed)
+	  // console.log('[Timer Debug] 显示格式:', formatted)
+	
+	  if (status.value === 'waiting') {
+	    waitingTimeText.value = formatted
+	  } else if (status.value === 'in_progress') {
+	    progressTimeText.value = formatted
+	  }
 	}
-
+	
 	const initCounter = (room) => {
-		console.log(room)
+		clearInterval(timer) // 先清
 		status.value = room.status
 		if (status.value === 'waiting') {
 			startTime.value = Number(room.waiting_start_at)
+			startTimestamp.value = Number(room.waiting_start_at || 0)
 		} else if (status.value === 'in_progress') {
 			startTime.value = Number(room.progress_start_at)
+			startTimestamp.value = Number(room.progress_start_at || 0)
 		}
-
-		updateTimer()
-		clearInterval(timer)
+	
+		updateTimer() // 立刻更新一次
+	
 		if (status.value === 'waiting' || status.value === 'in_progress') {
-			timer = setInterval(updateTimer, 1000)
+			timer = setInterval(() => {
+				updateTimer()
+			}, 1000)
 		}
 	}
+
+	
 
 	onUnmounted(() => {
 		clearInterval(timer)
@@ -586,7 +817,7 @@
 		onConfirm.value = doStartGame
 	}
 
-
+	const toView = ref('');
 	const openEmojiPanel = () => {
 		console.log("表情");
 	}
@@ -603,18 +834,51 @@
 		}
 	}
 
+	// const isRoomOperator = computed(() => {
+	// 	const room = roomData.value?.room
+	// 	if (!room) {
+	// 		console.log("不存在信息");
+	// 		return false;
+	// 	}
+	// 	if (room.is_terache) {
+	// 		return room.joined_role_code === 'seller'
+	// 	} else {
+	// 		return room.joined_role_code === 'dps'
+	// 	}
+	// })
+
+
 	const isRoomOperator = computed(() => {
-		const room = roomData.value?.room
-		if (!room) {
-			console.log("不存在信息");
-			return false;
-		}
+		const positions = roomData.value.positions || []
+		const room = roomData.value.room || {}
+		if (!room || !positions.length) return false
+
+		// 泰拉车：只有卖家能结算
 		if (room.is_terache) {
 			return room.joined_role_code === 'seller'
-		} else {
+		}
+
+		// 包车房
+		if (room.settle_model === 'baoche') {
+			const hasDps = positions.some(pos => pos.code === 'dps')
+
+			if (hasDps) {
+				return room.joined_role_code === 'dps'
+			} else {
+				return room.joined_role_code === 'baoche'
+			}
+		}
+
+		// 雷龙
+		if (room.settle_model === 'leilong') {
 			return room.joined_role_code === 'dps'
 		}
+		
+	
+		// 其它（普通副本）
+		return room.joined_role_code === 'dps'
 	})
+
 
 
 
@@ -743,24 +1007,38 @@
 
 		if (res.code === 1) {
 			msgList.value = res.data.list;
-			scrollToBottom()
-		} else {
-			uni.showToast({
-				title: res.msg,
-				icon: 'none'
+			// 滚动到底部
+			scrollTop.value = 0;
+			nextTick(() => {
+				scrollTop.value = undefined;
 			})
 		}
 	}
 
 	const commonPhrases = ref([]);
 	const getCommonPhrases = async () => {
-
 		const res = await uni.$http.post('/room/getCommonPhrases', {})
 		console.log('接口信息:', res)
-
 		if (res.code === 1) {
 			commonPhrases.value = res.data;
+		}
+	}
 
+
+	const updateGameUrl = async () => {
+		if (gameLinkInput.value == '') {
+			uni.showToast({
+				title: '请填写游戏组队链接',
+				icon: 'none'
+			})
+			return false;
+		}
+		const res = await uni.$http.post('/dungeon/updateGameUrl', {
+			room_id: room_id.value,
+			game_url: gameLinkInput.value
+		})
+		if (res.code === 1) {
+			gameLinkShow.value = false;
 		}
 	}
 
@@ -775,6 +1053,7 @@
 			roomData.value = res.data;
 			onCheckRoom()
 			initCounter(res.data.room)
+			gameLinkInput.value = roomData.value.room?.game_link;
 			// modeMapTree.value = res.data
 		}
 	}
@@ -800,6 +1079,13 @@
 				user_hero_id: selectedHeroId.value // 当前用户选择的英雄 ID
 			}
 		})
+
+
+		if (res.code == 100) {
+			rechargeShow.value = true;
+			orderInfo.value = res.data;
+			return false;
+		}
 
 		if (res.code === 1) {
 			uni.showToast({
@@ -901,22 +1187,36 @@
 
 	const doCompleteRoom = async () => {
 
-		if (settlementImage.value == "") {
+		if (settlementImage.value == "" && leilongStage.value != 'disband') {
 			uni.showToast({
 				title: "请上传结算截图",
 				icon: 'none'
 			})
 			return false;
 		}
-		
 		let SettlementUrl = '/dungeon/completeRoom';
-		if(roomData.value.room.is_terache){
-			SettlementUrl = '/dungeon/submitSettlement'
+		if (roomData.value.room.settle_model == 'normal') {
+			SettlementUrl = '/dungeon/completeRoom';
+		}
+		if (roomData.value.room.settle_model == 'terache') {
+			SettlementUrl = '/dungeon/submitSettlement';
 		}
 
+		if (roomData.value.room.settle_model == 'leilong') {
+			SettlementUrl = '/dungeon/completeLeilongRoom';
+		}
+		if (roomData.value.room.settle_model == 'baoche') {
+			SettlementUrl = '/dungeon/completeBaocheRoom';
+		}
+
+
+
+
+		const imagesList = settlementImage.value.join(',')
 		const res = await uni.$http.post(SettlementUrl, {
 			room_id: roomData.value.room.id,
-			image_url: settlementImage.value,
+			image_url: imagesList,
+			stage: leilongStage.value,
 			tera_cost: parseFloat(teraCost.value || 0), // 花费泰拉（单位：万）← 用户填的
 			is_gold_car: isGoldCar.value, // 是否金币车（0/1）← 用户选择
 			has_card: hasCard.value, // 是否有卡片（0/1）← 用户勾选
@@ -965,7 +1265,6 @@
 			// 绑定弹窗确认的操作
 			onConfirm.value = toHome
 		}
-
 	}
 	const toHome = () => {
 		uni.switchTab({
@@ -1030,6 +1329,7 @@
 	const copy = (val) => {
 		uniCopy({
 			content: val,
+			title: "角色名字已复制~",
 			success: (res) => {
 				uni.showToast({
 					title: res,
@@ -1051,13 +1351,14 @@
 		let res = JSON.parse(e.res.data.replace(/\ufeff/g, "") || "{}")
 		uploadStatus.value = e.status
 		if (res.data.url) {
-			settlementImage.value = res.data.url;
-			//处理结果返回给组件 
-			//data.url为上传成功后返回的图片地址
-			//e.index为图片索引值
-			// this.$refs.upload.result(res.data.url, e.index)
+			settlementImage.value.push(res.data.url);
+
 		}
 	}
+
+	// const audio = uni.createInnerAudioContext()
+	// audio.src = `/static/sounds/start.mp3`
+	// audio.play()
 
 	const uploadError = (e) => {
 		uploadStatus.value = e.status
@@ -1065,6 +1366,28 @@
 			content: JSON.stringify(e)
 		})
 	}
+
+	const pasteText = () => {
+		uni.getClipboardData({
+			success: (res) => {
+				// 粘贴的内容
+				gameLinkInput.value = res.data;
+				uni.showToast({
+					title: '粘贴成功',
+					icon: 'none',
+					duration: 1000
+				});
+			},
+			fail: () => {
+				uni.showToast({
+					title: '粘贴失败，请重试',
+					icon: 'none',
+					duration: 1000
+				});
+			}
+		});
+	}
+
 
 	const focus = ref(false)
 	const faceShow = ref(false)
@@ -1099,46 +1422,77 @@
 	}
 
 
-	const scrollViewRef = ref(null)
+	
 
-	const scrollToBottom = () => {
-		// nextTick(() => {
-		// 	// 使用 scroll-into-view 的方式
-		// 	const el = document.getElementById('chat-bottom')
-		// 	if (el && typeof el.scrollIntoView === 'function') {
-		// 		el.scrollIntoView({ behavior: 'smooth' })
-		// 	}
-		// })
-	}
+	
 
 
 	const scrollTo = ref('')
 
-	watch(
-		() => msgList.value.length,
-		(len) => {
-			if (len > 0) {
-				scrollTo.value = 'msg-' + (len - 1)
-			}
+	
+
+
+	const innerAudioContext = uni.createInnerAudioContext();
+	innerAudioContext.autoplay = true;
+
+
+	const destroyAudio = () => {
+		if (innerAudioContext) {
+			innerAudioContext.stop();
+			innerAudioContext.destroy();
+			innerAudioContext = null;
 		}
-	)
+	};
+	// 创建音频
+	const createAudio = (audioSrc) => {
+		// destroyAudio(); // 每次创建将上一个实例销毁
 
-	const playNumberVoice = (num) => {
-		const audio = uni.createInnerAudioContext()
-		audio.src = `/static/sounds/${num}.mp3`
-		audio.play()
+		setTimeout(() => {
+			innerAudioContext.src = audioSrc;
+		}, 100)
+		// 播放事件
+		innerAudioContext.onPlay(() => {
+			console.log("play audio");
+		});
+		// 播放结束事件
+		innerAudioContext.onEnded(() => {
+			console.log("ended audio");
+		});
+		// 播放错误事件
+		innerAudioContext.onError((error) => {
+			console.log("play audio error", error);
+			// 兼容ios（估计是官方bug），可能是ios资源没准备好时，播放会发生错误返回errCode为-1，这时需要重新播放，直至播放成功
+			if (error.errCode === -1) {
+				createAudio(audioSrc);
+			} else {
+				// 比如文件不存在等情况，会进入到这个提示
+				uni.showToast({
+					title: "播放失败：" + error.errMsg,
+					icon: "none",
+				});
+			}
+		});
+		// innerAudioContext.play();
+	};
 
-		audio.onEnded(() => audio.destroy())
-		audio.onError(() => audio.destroy())
-	}
 
 
+	
 
+	onMounted(async () => {
+		await getRoomData()
+		await getChatList()
+		await getCommonPhrases()
+		// if(roomData.room?.status === 'waiting' && isRoomOperator && roomData.value?.room.channel === 'wechat' && ['terache','baoche'].includes(roomData.value.room?.map_code) && !roomData.value.room.game_link_status){
+		// 	gameLinkShow.value = true;
+		// }
 
-	onMounted(() => {
-		getRoomData()
-		getChatList()
-		getCommonPhrases()
+		if (isRoomOperator.value && roomData.value?.room.status === 'waiting' && roomData.value?.room
+			.channel === 'wechat' && ['terache', 'baoche'].includes(roomData.value.room?.settle_model) && !roomData
+			.value.room.game_link_status) {
+			gameLinkShow.value = true;
+		}
+
 		// playJoinSound()
 		ws.on('room_update', (msg) => {
 			console.log('收到 room_update:', msg.data)
@@ -1151,14 +1505,30 @@
 
 		ws.on('chat', (msg) => {
 			msgList.value.push(msg.data)
-			scrollToBottom()
+			// 滚动到底部
+			scrollTop.value = 0;
+			nextTick(() => {
+				scrollTop.value = undefined;
+			})
 		})
 
 		ws.on('member_join_voice', (msg) => {
 			const num = msg.joined_number
-			if (num >= 1 && num <= 6) {
-				playNumberVoice(num)
+			if (num >= 2 && num <= 6) {
+				// playAudio(`/static/sounds/${num}.mp3`);
+				createAudio(`/static/sounds/${num}.mp3`);
+				// playNumberVoice(num)
 			}
+		})
+		ws.on('start', (msg) => {
+			// playAudio('/static/sounds/start.mp3');
+			createAudio('/static/sounds/start.mp3');
+			// const audio = uni.createInnerAudioContext()
+			// audio.src = `/static/sounds/start.mp3`
+			// audio.play()
+
+			// audio.onEnded(() => audio.destroy())
+			// audio.onError(() => audio.destroy())
 		})
 		ws.on('completeRoom', (res) => {
 			// console.log(res);
@@ -1196,7 +1566,7 @@
 
 <style scoped lang="scss">
 	.room-container {
-		// position: fixed;
+		position: fixed;
 		width: 100%;
 		top: 0;
 		background-color: #fff;
@@ -1204,7 +1574,43 @@
 		height: 100vh;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
+		// justify-content: space-between;
+	}
+	
+	
+	
+	
+	
+	.message-wrap {
+		height: 0;
+		flex: 1;
+	
+		.scroll-list {
+			height: 100%;
+			transform: scaleY(-1);
+		}
+	
+		.message-item-wrap {
+			min-height: 100%;
+			transform: scaleY(-1);
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			padding: 40rpx;
+		}
+	
+		.loading-wrap {
+			transform: scaleY(-1);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 10rpx;
+		}
+	}
+
+	.room-tag-icon {
+		width: 30rpx;
+		height: 30rpx;
 	}
 
 	.room-header {
@@ -1273,7 +1679,13 @@
 		width: 100%;
 		/* height: 100rpx; */
 		bottom: 20rpx;
-		padding: 0rpx 20rpx;
+		// padding: 0rpx 20rpx;
+	}
+
+	.team-tips-item {
+		color: red;
+		font-size: 26rpx;
+		margin: 5rpx 0rpx;
 	}
 
 
@@ -1288,13 +1700,28 @@
 		margin-left: auto;
 	}
 
+	.room-tag {
+		border-radius: 0rpx 50rpx 50rpx 0rpx;
+	}
+
+	.room-time {
+		border-radius: 50rpx 0rpx 0rpx 50rpx;
+	}
+
 	.room-tag,
 	.room-time {
 		background: rgba(0, 0, 0, 0.8);
-		border-radius: 30rpx;
+		// border-radius: 50rpx;
 		padding: 15rpx 30rpx;
 		font-size: 28rpx;
 		font-weight: 500;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.room-tag-label {
+		margin-left: 10rpx;
 	}
 
 	.room-members {
@@ -1373,9 +1800,24 @@
 	}
 
 	.room-chat {
-		padding: 0 20rpx;
+		// padding: 0 20rpx;
 		flex: 1;
 		overflow-y: auto;
+	}
+
+	.Profit {
+		color: #007aff;
+		font-size: 30rpx;
+		font-weight: 500;
+		margin: 10rpx 0rpx;
+	}
+
+	.sumProfit {
+		color: red;
+		font-size: 30rpx;
+		font-weight: 500;
+		width: 100%;
+		text-align: center;
 	}
 
 	.chat-msg {
@@ -1438,7 +1880,7 @@
 
 
 	.room-chat {
-		padding: 20rpx;
+		padding: 0rpx 20rpx;
 	}
 
 	.chat-msg {
@@ -1490,7 +1932,7 @@
 	.room-footer {
 		// padding: 20rpx;
 		background: #f8f8f8;
-		z-index: 3000;
+		z-index: 1;
 		/* border-top: 1rpx solid #333; */
 	}
 
@@ -1520,19 +1962,19 @@
 	}
 
 	.chat-input {
-		height: 72rpx;
+		height: 82rpx;
 		display: flex;
 		align-items: center;
 		background: #fff;
 		border-radius: 10 rpx;
-		padding: 8rpx 16rpx;
+		padding: 16rpx;
 	}
 
 	.input {
 		flex: 1;
 		background: transparent;
 		color: #000;
-		font-size: 24rpx;
+		font-size: 26rpx;
 		border: none;
 		outline: none;
 	}
@@ -1621,6 +2063,12 @@
 	.reset-btn {
 		background: #1677ff;
 		box-shadow: 0rpx 4rpx 9rpx 0rpx rgba(33, 56, 225, 0.98);
+	}
+	
+	
+	.game-link-btn {
+		background: rgba(128, 0, 2, 1.0);
+		box-shadow: 0rpx 4rpx 9rpx 0rpx #fc0107;
 	}
 
 	.forced-two-line {
@@ -1879,6 +2327,7 @@
 		background-color: #fff;
 		display: flex;
 		flex-direction: column;
+		height: 70vh;
 		/* padding: 0rpx 40rpx; */
 	}
 
@@ -1907,7 +2356,7 @@
 		text-align: center;
 		font-size: 30rpx;
 		padding: 24rpx;
-		color: #3366ff;
+		color: #007aff;
 		border-bottom: 1rpx solid #eee;
 	}
 
@@ -1965,6 +2414,7 @@
 		flex: 1;
 		text-align: right;
 		color: #333;
+		font-size: 30rpx !important;
 	}
 
 	.input-with-unit {
@@ -1976,7 +2426,7 @@
 
 	.unit {
 		font-size: 28rpx;
-		color: #666;
+		color: #888;
 	}
 
 	.circle-radio-group {
@@ -2038,13 +2488,15 @@
 
 	.upload-text {
 		font-size: 24rpx;
-		color: #888;
 		margin-top: 10rpx;
 	}
 
 	.popup-footer {
-		margin: 30rpx;
-
+		// margin: 30rpx;
+		width: 100%;
+		padding: 30rpx;
+		position: absolute;
+		bottom: 20rpx;
 	}
 
 	.submit-btn {
@@ -2067,6 +2519,8 @@
 		border-top: 1rpx solid #eee;
 		position: relative;
 	}
+	
+	
 
 	.summary-left {
 		flex: 1;
@@ -2080,15 +2534,15 @@
 	}
 
 	.summary-label {
-		font-weight: bold;
+		// font-weight: bold;
 		font-size: 28rpx;
-		color: #666;
+		color: #888;
 		margin-right: 10rpx;
 	}
 
 	.value {
 		font-size: 28rpx;
-		color: #666;
+		color: #888;
 	}
 
 	.images {
@@ -2138,6 +2592,13 @@
 		border-radius: 12rpx;
 		padding: 10rpx 20rpx;
 		font-size: 26rpx;
+	}
+
+	.btn-default {
+		box-sizing: border-box;
+		height: 60rpx !important;
+		display: flex;
+		align-items: center;
 	}
 
 	.bottom-status {
@@ -2215,5 +2676,93 @@
 
 	.fui-del__box:active {
 		background-color: #ddd;
+	}
+
+	.game-link-popup-header {
+		text-align: center;
+		font-size: 30rpx;
+		padding: 24rpx;
+		color: #000;
+		font-weight: 500;
+		border-bottom: 1rpx solid #eee;
+	}
+
+	.fui-icon__close {
+		position: absolute;
+		top: 24rpx;
+		right: 54rpx;
+
+	}
+
+	.game-link-card-box {
+		position: relative;
+		// padding: 20rpx;
+	}
+
+	.game-link-content {
+		padding: 0rpx 20rpx;
+		height: 230rpx;
+	}
+
+	.link-input-box {
+		margin: 30rpx 0rpx;
+		display: flex;
+		align-items: center;
+	}
+
+	.paste-btm {
+		margin: 0rpx 20rpx;
+		background-color: #3366ff;
+		color: #fff;
+		padding: 15rpx;
+		font-size: 28rpx;
+		border-radius: 10rpx;
+		text-align: center;
+	}
+
+	.game-link-input {
+		color: #333;
+		flex: 1;
+	}
+
+	.link-desc {
+		margin-top: 40rpx;
+		color: darkred;
+		font-size: 28rpx;
+	}
+
+	.link-btn-layout {
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
+		height: 100rpx;
+		border-top: 1rpx solid #eee;
+	}
+
+	.link-btn-close {
+		width: 50%;
+		// background-color: #3366ff;
+		color: #000;
+		padding: 20rpx 0;
+		font-size: 28rpx;
+
+		border-radius: 10rpx;
+		text-align: center;
+	}
+
+	.link-btn {
+		width: 50%;
+		// background-color: #3366ff;
+		color: #3366ff;
+		padding: 20rpx 0;
+		font-size: 28rpx;
+		border-radius: 10rpx;
+		text-align: center;
+	}
+
+	.line {
+		width: 1rpx;
+		height: 100%;
+		background: #eee;
 	}
 </style>

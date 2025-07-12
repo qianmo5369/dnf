@@ -9,6 +9,8 @@
     "tn-icon": "../../uni_modules/tuniaoui-vue3/components/icon/src/icon",
     "roles": "../../components/Roles",
     "team": "../../components/team",
-    "dungeon-select": "../../components/dungeonSelect"
+    "dungeon-select": "../../components/dungeonSelect",
+    "recharge": "../../components/recharge",
+    "fui-dialog": "../../components/fui-dialog"
   }
 }

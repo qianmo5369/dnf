@@ -18,7 +18,7 @@ const _sfc_main = {
     const selectedIds = common_vendor.ref([]);
     const uploadStatus = common_vendor.ref(false);
     const reason = common_vendor.ref("");
-    const imageUrl = common_vendor.ref("");
+    const imageUrl = common_vendor.ref([]);
     const targets = common_vendor.ref([]);
     common_vendor.onLoad((params) => {
       if (params.room_id) {
@@ -51,7 +51,7 @@ const _sfc_main = {
       let res = JSON.parse(e.res.data.replace(/\ufeff/g, "") || "{}");
       uploadStatus.value = e.status;
       if (res.data.url) {
-        imageUrl.value = res.data.url;
+        imageUrl.value.push(res.data.url);
       }
     };
     const uploadError = (e) => {
@@ -70,11 +70,12 @@ const _sfc_main = {
           icon: "none"
         });
       }
+      const imagesList = imageUrl.value.join(",");
       const res = await common_vendor.index.$http.post("/room/submitComplaint", {
         room_id: room_id.value,
         target_ids: selectedIds.value.map((i) => targets.value[i].user_id),
         reason: reason.value,
-        images: imageUrl.value
+        images: imagesList
       });
       if (res.code === 1) {
         common_vendor.index.showToast({

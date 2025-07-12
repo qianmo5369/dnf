@@ -79,7 +79,6 @@
 }
 .record-list.data-v-b52f060d {
   padding: 0 24rpx;
-  height: 60vh;
 }
 .record-item.data-v-b52f060d {
   background: #fff;

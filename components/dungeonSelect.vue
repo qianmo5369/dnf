@@ -1,5 +1,9 @@
 <template>
 	<!-- 弹窗 -->
+	<!-- 弹窗 -->
+	<TnPopup :model-value="contentShow"  :z-index="20079" width="100%" height="100%" borderRadius="16rpx">
+		<Parse v-if="contentShow" v-model="contentShow"  :contentId="contentId"></Parse>
+	</TnPopup>
 	<!-- 标题栏 -->
 	<view class="hd">
 		<text class="title">泰拉车</text>
@@ -9,19 +13,10 @@
 	</view>
 	<!-- 滚动区域 -->
 	<scroll-view class="bd" scroll-y>
-		<!-- 团本图 -->
-		<!-- <view class="dungeon-list">
-			<view v-for="(d, index) in modeMapTree" :key="d.id" class="dungeon-item"
-				:style="{ backgroundImage: `url(${d.image})` }" @tap="onSelectDungeon(index)">
-				<view class="dungeon-label">{{ d.title }}</view>
-				<view :class="['mask', selectedDungeon === d.id ? 'mask-hidden' : '']"></view>
-			</view>
-		</view> -->
-
 		<view class="dungeon-list">
 			<view v-if="ozmaDungeon" class="dungeon-item" :style="{ backgroundImage: `url(${ozmaDungeon.image})` }">
 				<!-- <view class="dungeon-label">{{ ozmaDungeon.title }}</view> -->
-				<view class="dungeon-label">查看泰拉车规则</view>
+				<view class="dungeon-label" @tap="handleContent(4)">查看泰拉车规则</view>
 				<view class="mask mask-hidden"></view>
 			</view>
 		</view>
@@ -48,118 +43,46 @@
 				<text class="role-buy" v-if="selectedRole.code == 'deck' || selectedRole.code == 'team'">(买家)</text>
 			</view>
 		</view>
-
-		<!-- 选择位置 -->
-		<view class="form-group" v-if="showPositionSelector">
-			<text class="label">选择位置</text>
-			<view class="options">
-				<view v-for="role in filteredRoles" :key="role.id" class="option-btn"
-					:class="{ active: selectedPosition === role.id }" @tap="() => handleSelectPosition(role)">
-					{{ role.title }}
+		
+		<view v-if="currentConfigOptions && currentConfigOptions.length">
+		  <view
+		    class="form-group"
+		    v-for="opt in currentConfigOptions"
+		    :key="opt.id"
+		  >
+		  <view class="label-with-tip">
+		  	<text>{{ opt.label }}</text>
+		  	<TnIcon v-if="opt.show" name="help" style="margin-left: 10rpx;" size="30rpx" @tap="onTips(opt.tips )" />
+		  </view>
+		  
+		    <view class="options">
+		      <view
+		        v-for="item in opt.options"
+		        :key="item.value"
+		        class="radio-item"
+		        @tap="selectedOptions[opt.id] = item.value"
+		      >
+			  
+		        <view class="radio" :class="{ checked: selectedOptions[opt.id] === item.value }">
+					<view v-if="selectedOptions[opt.id] === item.value" class="radio-inner"></view>
 				</view>
-			</view>
-		</view>
+		        <text>{{ item.label }}</text>
+		      </view>
+		    </view> 
+		 </view>
+			</view> 
+			
 
-
-		<!-- 关闭位置 -->
-		<view class="form-group" v-if="showClosureOption">
-			<text class="label">关闭位置</text>
-			<view class="options">
-				<view v-for="opt in configOptions.closure_count" :key="opt.value" class="radio-item"
-					@tap="selectedClosure = opt.value">
-					<view class="radio" :class="{ checked: selectedClosure === opt.value }" />
-					<text>{{ opt.label }}</text>
-				</view>
-			</view>
-		</view>
-
-		<!-- 雇佣打手 -->
-		<view class="form-group" v-if="showHireOption">
-			<view class="label-with-tip">
-				<text>雇佣打手</text>
-				<TnIcon name="help" size="24rpx" @tap="tip('雇佣打手说明')" />
-			</view>
-			<view class="options">
-				<view v-for="opt in configOptions.hire_count" :key="opt.value" class="radio-item"
-					@tap="selectedHire = opt.value">
-					<view class="radio" :class="{ checked: selectedHire === opt.value }" />
-					<text>{{ opt.label }}</text>
-				</view>
-			</view>
-		</view>
-
-		<!-- 是否一拖 -->
-		<view class="form-group" v-if="showIsSoloOption">
-			<text class="label">是否一拖</text>
-			<view class="options">
-				<view v-for="opt in configOptions.is_solo" :key="opt.value" class="radio-item"
-					@tap="selectedIsSolo = opt.value">
-					<view class="radio" :class="{ checked: selectedIsSolo === opt.value }" />
-					<text>{{ opt.label }}</text>
-				</view>
-			</view>
-		</view>
-
-
-		<!-- 开启辅助位置 -->
-		<view class="form-group" v-if="showEnableSupport">
-			<text class="label">开启辅助位置</text>
-			<view class="options">
-				<view v-for="opt in configOptions.is_solo" :key="opt.value" class="radio-item"
-					@tap="selectedSupport = opt.value">
-					<view class="radio" :class="{ checked: selectedSupport === opt.value }" />
-					<text>{{ opt.label }}</text>
-				</view>
-			</view>
-		</view>
+		
 
 
 
 
-		<!-- 拥有泰拉 -->
-		<view class="form-group" v-if="showTeraOwnOption">
-			<view class="label-with-tip">
-				<text>拥有泰拉</text>
-				<TnIcon name="help" size="24rpx" @tap="tip('拥有泰拉说明')" />
-			</view>
-			<view class="options">
-				<view v-for="opt in configOptions.tera_own" :key="opt.value" class="radio-item"
-					@tap="selectedTeraOwn = opt.value">
-					<view class="radio" :class="{ checked: selectedTeraOwn === opt.value }" />
-					<text>{{ opt.label }}</text>
-				</view>
-			</view>
-		</view>
-
-		<view class="form-group" v-if="showTeraOptions">
-			<view class="label-with-tip">
-				<text>泰拉比例</text>
-				<TnIcon name="help" size="24rpx" @tap="tip('泰拉比例说明')" />
-			</view>
-			<view class="options">
-				<view v-for="opt in configOptions.tera_ratio" :key="opt.value" class="radio-item"
-					@tap="selectedTeraRatio = opt.value">
-					<view class="radio" :class="{ checked: selectedTeraRatio === opt.value }" />
-					<text>{{ opt.label }}</text>
-				</view>
-			</view>
-		</view>
 
 
-		<!-- 是否私密房间 -->
-		<view class="form-group" v-if="showPrivateOption">
-			<view class="label-with-tip">
-				<text>私密房间</text>
-				<TnIcon name="help" size="24rpx" @tap="tip('私密房间说明')" />
-			</view>
-			<view class="options">
-				<view v-for="opt in configOptions.is_private" :key="opt.value" class="radio-item"
-					@tap="selectedPrivate = opt.value">
-					<view class="radio" :class="{ checked: selectedPrivate === opt.value }" />
-					<text>{{ opt.label }}</text>
-				</view>
-			</view>
-		</view>
+	
+
+	
 
 
 	</scroll-view>
@@ -187,15 +110,27 @@
 		defineProps,
 		computed,
 		watch,
+		reactive,
 		defineEmits
 	} from 'vue'
 	import TnIcon from '@/uni_modules/tuniaoui-vue3/components/icon/src/icon.vue'
 	import TnAvatar from '@/uni_modules/tuniaoui-vue3/components/avatar/src/avatar.vue'
+	import TnPopup from '@/uni_modules/tuniaoui-vue3/components/popup/src/popup.vue'
+	import Parse from "@/components/parse.vue"
 	import {
 		useUserStore
 	} from '@/stores/user'
 	// 控制弹窗显示
 	const show = ref(true)
+	
+	const contentId = ref(null)
+	const contentShow = ref(false)
+	const handleContent = (id) => {
+			contentId.value = id;
+			contentShow.value = true;
+		}
+	
+	
 	// 计算 70% 高度
 	const sys = uni.getSystemInfoSync()
 	const popupHeight = sys.windowHeight * 0.7 + 'px';
@@ -222,17 +157,12 @@
 			default: "deck"
 		}
 	})
-	const emit = defineEmits(['update:modelValue', 'confirm-select', 'confirm-share'])
+	const emit = defineEmits(['update:modelValue', 'confirm-select', 'confirm-share','confirm-recharge'])
 	const handleSelectorClick = () => {
 		console.log("通知父组件");
 		emit('confirm-select')
 	}
 
-	const handleSelectPosition = (role) => {
-		// 只能选当前可用的 role，且不是 seller 特殊情况
-		if (currentMap.value?.code === 'terache' && role.code === 'seller') return
-		selectedPosition.value = role.id
-	}
 	
 	const ozmaDungeon = computed(() =>
 	  props.modeMapTree.find(d => d.code === 'ozma_assault') || {}
@@ -372,7 +302,8 @@
 	//   { immediate: true }
 	// )
 	const initialized = ref(false)
-	
+	const currentConfigOptions = ref([])    // 当前显示的配置项列表
+	const selectedOptions = reactive({});    // 当前已选配置项的值
 	
 	const initSelection = () => {
 	  const val = props.modeMapTree
@@ -392,7 +323,22 @@
 	
 	  const map = dungeon.maps?.[selectedMapIndex.value]
 	  const role = map?.roles?.find(r => r.code === props.defaultRoleCode)
-	  selectedPosition.value = role?.id ?? null
+	  selectedPosition.value = role?.id ?? null;
+	  
+	  
+	  
+	  console.log(role);
+	  currentConfigOptions.value = JSON.parse(JSON.stringify(role.config_options || []))
+	  
+	    // 每次切换角色，初始化配置项选中值
+	    // selectedOptionsClear()  // 先清空
+	    if (currentConfigOptions.value.length) {
+	      currentConfigOptions.value.forEach(opt => {
+	        // 默认选中第一个选项
+	        selectedOptions[opt.id] = opt.options?.[0]?.value
+	      })
+	    }
+	  
 	
 	  console.log('selectedMapIndex:', selectedMapIndex.value)
 	  console.log('selectedPosition:', selectedPosition.value)
@@ -400,32 +346,6 @@
 
 
 
-	// watch(
-	// 	() => props.modeMapTree,
-	// 	(val) => {
-	// 		console.log('modeMapTree 到达:', val)
-	// 		if (initialized.value || !val.length) return
-	// 		// if (val.length === 0) return
-
-	// 		// 根据 code 查找 dungeon
-	// 		const dungeonIndex = val.findIndex(d => d.code === props.defaultDungeonCode)
-	// 		const dungeon = dungeonIndex >= 0 ? val[dungeonIndex] : val[0]
-	// 		selectedDungeonIndex.value = dungeonIndex >= 0 ? dungeonIndex : 0
-	// 		selectedDungeon.value = dungeon.id
-
-	// 		// 根据 code 查找 map
-	// 		const mapIndex = dungeon.maps?.findIndex(m => m.code === props.defaultMapCode)
-	// 		selectedMapIndex.value = mapIndex >= 0 ? mapIndex : 0
-
-	// 		// 根据 code 查找 role
-	// 		const map = dungeon.maps?.[selectedMapIndex.value]
-	// 		const role = map?.roles?.find(r => r.code === props.defaultRoleCode)
-	// 		selectedPosition.value = role?.id ?? null
-	// 		  initialized.value = true
-	// 	}, {
-	// 		immediate: true
-	// 	}
-	// )
 	
 	
 	
@@ -442,61 +362,20 @@
 	  { immediate: true }
 	)
 
-
-
-
-
-
-	watch(() => configOptions.value.closure_count, (opts) => {
-		if (opts?.length) selectedClosure.value = opts[0].value
-	}, {
-		immediate: true
-	})
-
-	watch(() => configOptions.value.hire_count, (opts) => {
-		if (opts?.length) selectedHire.value = opts[0].value
-	}, {
-		immediate: true
-	})
-
-	watch(() => configOptions.value.tera_ratio, (opts) => {
-		if (opts?.length) selectedTeraRatio.value = opts[0].value
-	}, {
-		immediate: true
-	})
-
-	watch(() => configOptions.value.tera_own, (opts) => {
-		if (opts?.length) selectedTeraOwn.value = opts[0].value
-	}, {
-		immediate: true
-	})
-
-	watch(() => configOptions.value.is_solo, (opts) => {
-		if (opts?.length) selectedIsSolo.value = opts[0].value
-	}, {
-		immediate: true
-	})
-
-
-	watch(() => configOptions.value.is_private, (opts) => {
-		if (opts?.length) selectedPrivate.value = opts[0].value
-	}, {
-		immediate: true
-	})
-
-
-	watch(() => configOptions.value.enable_support, (opts) => {
-		if (opts?.length) selectedSupport.value = opts[0].value
-	}, {
-		immediate: true
-	})
-
 	const onSelectDungeon = (index) => {
 		selectedDungeonIndex.value = index
 		selectedDungeon.value = props.modeMapTree[index].id
 		selectedMapIndex.value = 0;
 		selectedPosition.value = null;
 
+	}
+	
+	const getPayloadConfig = ()=> {
+	  if (!currentConfigOptions.value.length) return []
+	  return currentConfigOptions.value.map(opt => ({
+	    option_id: opt.id,
+	    value: selectedOptions[opt.id]
+	  }))
 	}
 
 	const createRoom = async () => {
@@ -506,78 +385,20 @@
 			map_id: currentMap.value?.id,
 			role_id: selectedPosition.value,
 			hero_id: 0, // 如果你有英雄选择逻辑
-			config: []
+			config: getPayloadConfig()
 		}
 		
 		
-		const findOptionId = (groupKey, value) => {
-		  const list = configOptions.value[groupKey] || []
-		  const option = list.find(item => item.value == value)
-		  return option?.id || null
-		}
 		
-		// 然后改写你的逻辑：
-		if (showClosureOption.value && selectedClosure.value) {
-		  const id = findOptionId('closure_count', selectedClosure.value)
-		  if (id) payload.config.push(id)
-		}
-		
-		if (showHireOption.value && selectedHire.value) {
-		  const id = findOptionId('hire_count', selectedHire.value)
-		  if (id) payload.config.push(id)
-		}
-		
-		if (showTeraOptions.value && selectedTeraRatio.value) {
-		  const id = findOptionId('tera_ratio', selectedTeraRatio.value)
-		  if (id) payload.config.push(id)
-		}
-		
-		if (showTeraOwnOption.value && selectedTeraOwn.value) {
-		  const id = findOptionId('tera_own', selectedTeraOwn.value)
-		  if (id) payload.config.push(id)
-		}
-		
-		if (showIsSoloOption.value && selectedIsSolo.value) {
-		  const id = findOptionId('is_solo', selectedIsSolo.value)
-		  if (id) payload.config.push(id)
-		}
-		
-		if (showPrivateOption.value && selectedPrivate.value) {
-		  const id = findOptionId('is_private', selectedPrivate.value)
-		  if (id) payload.config.push(id)
-		}
-		
-		if (showEnableSupport.value && selectedSupport.value) {
-		  const id = findOptionId('enable_support', selectedSupport.value)
-		  if (id) payload.config.push(id)
-		}
-
-		// 动态添加 config 字段
-		// if (showClosureOption.value) {
-		// 	payload.config.closure_count = selectedClosure.value
-		// }
-		// if (showHireOption.value) {
-		// 	payload.config.hire_count = selectedHire.value
-		// }
-		// if (showTeraOptions.value && selectedTeraRatio.value) {
-		// 	payload.config.tera_ratio = selectedTeraRatio.value
-		// }
-		// if (showTeraOwnOption.value && selectedTeraOwn.value) {
-		// 	payload.config.tera_own = selectedTeraOwn.value
-		// }
-		// if (showIsSoloOption.value && selectedIsSolo.value) {
-		// 	payload.config.is_solo = selectedIsSolo.value
-		// }
-		// if (showPrivateOption.value && selectedPrivate.value) {
-		// 	payload.config.is_private = selectedPrivate.value
-		// }
-		// if (showEnableSupport.value && selectedSupport.value) {
-		// 	payload.config.enable_support = selectedSupport.value
-		// }
 		const res = await uni.$http.post('/dungeon/create', {
 			payload
 		})
 		console.log('用户信息:', res)
+		
+		if(res.code == 100){
+			   emit('confirm-recharge',res.data)
+			   return false;
+		}
 
 		if (res.code === 1) {
 			emit('update:modelValue', false)

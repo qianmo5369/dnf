@@ -8,7 +8,7 @@ export default function uniCopy({content,title = '角色名字已复制~',succes
 	uni.setClipboardData({
 		data: content,
 		success: function() {
-			success("复制成功~")
+			success(title)
 			console.log('success');
 		},
 		fail:function(){

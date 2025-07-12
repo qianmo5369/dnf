@@ -57,7 +57,7 @@
 	const selectedIds = ref([])
 	const uploadStatus = ref(false);
 	const reason = ref('')
-	const imageUrl = ref('')
+	const imageUrl = ref([])
 	const targets = ref([])
 	onLoad((params) => {
 		if (params.room_id) {
@@ -104,7 +104,7 @@
 		let res = JSON.parse(e.res.data.replace(/\ufeff/g, "") || "{}")
 		uploadStatus.value = e.status
 		if (res.data.url) {
-			imageUrl.value = res.data.url;
+			imageUrl.value.push(res.data.url)
 		}
 	}
 	
@@ -126,12 +126,12 @@
 			})
 		}
 		
-
+		const imagesList = imageUrl.value.join(',')
 		const res = await uni.$http.post('/room/submitComplaint', {
 		    room_id: room_id.value,
 		    target_ids: selectedIds.value.map(i => targets.value[i].user_id),
 		    reason: reason.value,
-		    images: imageUrl.value
+		    images:imagesList
 		  })
 		if (res.code === 1) {
 			uni.showToast({

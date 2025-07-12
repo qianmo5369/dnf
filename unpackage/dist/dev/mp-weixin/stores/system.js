@@ -11,12 +11,14 @@ const useSystemStore = common_vendor.defineStore("system", {
       this.config = config;
     },
     async fetchConfig() {
+      common_vendor.index.__f__("log", "at stores/system.js:16", "请求公共配置");
       try {
         const res = await common_vendor.index.$http.get("/index/config");
         if (res.code === 1) {
-          this.config(res.data);
+          common_vendor.index.__f__("log", "at stores/system.js:21", "进入配置");
+          this.setConfig(res.data);
           common_vendor.index.setStorageSync("config", res.data);
-          common_vendor.index.__f__("log", "at stores/system.js:21", res.data);
+          common_vendor.index.__f__("log", "at stores/system.js:24", res.data);
           return res;
         } else {
           return null;

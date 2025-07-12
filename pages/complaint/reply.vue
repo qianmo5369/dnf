@@ -80,6 +80,22 @@
 		}
 	}
 	
+	// const uploadSuccess = (e) => {
+	// 	console.log(e)
+	// 	//上传成功回调，处理服务器返回数据【此处根据实际返回数据进行处理】
+	// 	let res = JSON.parse(e.res.data.replace(/\ufeff/g, "") || "{}")
+	// 	uploadStatus.value = e.status
+	// 	if (res.data.url) {
+	// 		imageUrl.value = res.data.url;
+	// 		//处理结果返回给组件 
+	// 		//data.url为上传成功后返回的图片地址
+	// 		//e.index为图片索引值
+	// 		// this.$refs.upload.result(res.data.url, e.index)
+	// 	}
+	// }
+	
+	
+	
 	const uploadError = (e) => {
 		uploadStatus.value = e.status
 		uni.showModal({
@@ -102,10 +118,15 @@
 		    images: imagesList
 		  })
 		if (res.code === 1) {
-			return uni.showToast({
+			uni.showToast({
 				title: res.msg,
 				icon: 'none'
 			})
+			
+			setTimeout(()=>{
+				uni.navigateBack()
+			},1200)
+			
 		}
 	}
 </script>

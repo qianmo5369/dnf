@@ -2,6 +2,9 @@
   "component": true,
   "usingComponents": {
     "tn-icon": "../uni_modules/tuniaoui-vue3/components/icon/src/icon",
-    "tn-avatar": "../uni_modules/tuniaoui-vue3/components/avatar/src/avatar"
+    "tn-avatar": "../uni_modules/tuniaoui-vue3/components/avatar/src/avatar",
+    "tn-popup": "../uni_modules/tuniaoui-vue3/components/popup/src/popup",
+    "parse": "./parse",
+    "fui-horizontal-scroll": "./fui-horizontal-scroll/fui-horizontal-scroll"
   }
 }

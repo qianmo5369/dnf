@@ -7,7 +7,7 @@ function uniCopy({ content, title = "角色名字已复制~", success, error }) 
   common_vendor.index.setClipboardData({
     data: content,
     success: function() {
-      success("复制成功~");
+      success(title);
       common_vendor.index.__f__("log", "at js_sdk/xb-copy/uni-copy.js:12", "success");
     },
     fail: function() {

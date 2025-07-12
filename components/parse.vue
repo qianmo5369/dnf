@@ -2,26 +2,28 @@
   <!-- 弹窗 -->
  
     <!-- 标题栏 -->
-    <view class="hd">
-      <text class="title">{{title}}</text>
-      <view class="btn-close" @tap="onClose">
-        <TnIcon name="close" />
-      </view>
-    </view>
-    <!-- 滚动区域 -->
-    <scroll-view class="bd" scroll-y>
-	<view class="content-html" v-html="content"></view>
 
+    	<view class="hd">
+    	      <text class="title">{{title}}</text>
+    	      <view class="btn-close" @tap="onClose">
+    	        <TnIcon name="close" />
+    	      </view>
+    	    </view>
+    	    <!-- 滚动区域 -->
+    	    <scroll-view class="bd" scroll-y>
+    		<view class="content-html" v-html="content"></view>
+    	
+    	
+    	    </scroll-view>
+    	<!-- 红色提示 -->
+    	      
+    	    <!-- 底部按钮 -->
+    	    <view class="ft">
+    	      <view class="btn-group" @tap="onClose">
+    	      	<view class="btn btn-primary" >我知道了</view>
+    	      </view>
+    	    </view>
 
-    </scroll-view>
-<!-- 红色提示 -->
-      
-    <!-- 底部按钮 -->
-    <view class="ft">
-      <view class="btn-group" @tap="onClose">
-      	<view class="btn btn-primary" >我知道了</view>
-      </view>
-    </view>
 </template>
 
 <script setup>

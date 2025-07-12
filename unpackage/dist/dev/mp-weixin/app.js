@@ -20,6 +20,8 @@ if (!Math) {
   "./pages/complaint/reply.js";
   "./pages/complaint/index.js";
   "./pages/user/complaint-record.js";
+  "./pages/user/setting.js";
+  "./pages/room/detail.js";
 }
 const _sfc_main = {
   // onLaunch: function() {

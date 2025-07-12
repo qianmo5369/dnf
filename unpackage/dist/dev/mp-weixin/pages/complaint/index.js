@@ -1,5 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const util_formatNumber = require("../../util/formatNumber.js");
+const util_ws = require("../../util/ws.js");
 if (!Array) {
   const _component_uni_icons = common_vendor.resolveComponent("uni-icons");
   _component_uni_icons();
@@ -13,7 +15,7 @@ const TnIcon = () => "../../uni_modules/tuniaoui-vue3/components/icon/src/icon.j
 const _sfc_main = {
   __name: "index",
   setup(__props) {
-    const pageType = common_vendor.ref(false);
+    common_vendor.ref(false);
     common_vendor.ref("100vh");
     common_vendor.ref(null);
     common_vendor.ref(200);
@@ -51,8 +53,21 @@ const _sfc_main = {
         buildSteps(res.data);
       }
     };
+    const confirmSettlement = async () => {
+      const res = await common_vendor.index.$http.post("/room/confirmSettlement", {
+        room_id: room_id.value
+      });
+      if (res.code === 1) {
+        getSettlementDetail();
+      }
+    };
     common_vendor.onMounted(() => {
       getSettlementDetail();
+      util_ws.ws.on("confirmSettlement", (msg) => {
+        common_vendor.index.__f__("log", "at pages/complaint/index.vue:392", "泰拉车结算更新");
+        detail.value = msg.data;
+        buildSteps(msg.data);
+      });
     });
     const buildSteps = (data) => {
       const result = [];
@@ -64,27 +79,39 @@ const _sfc_main = {
         type: "step2",
         title: "买家确认结算"
       });
-      if (Array.isArray(data.replies)) {
-        data.replies.forEach((reply) => {
-          common_vendor.index.__f__("log", "at pages/complaint/index.vue:331", reply);
+      if (data.complaint_thread.length > 0) {
+        result.push({
+          type: "tips",
+          title: ""
+        });
+      }
+      if (Array.isArray(data.complaint_thread)) {
+        if (data.complaint_thread.length > 0) {
           result.push({
-            type: "reply",
-            title: "回复",
+            type: "complaintsTips",
+            title: "平台介入"
+          });
+        }
+        data.complaint_thread.forEach((reply) => {
+          common_vendor.index.__f__("log", "at pages/complaint/index.vue:439", reply);
+          let reason = "";
+          if (reply.is_topic == 1) {
+            reason = reply.reason;
+          } else {
+            reason = reply.content;
+          }
+          result.push({
+            type: "complaints",
+            title: "买家发起争议",
             nickname: reply.nickname,
             hero_avatar: reply.hero_avatar,
             hero_name: reply.hero_name,
             hero_nickname: reply.hero_nickname,
-            content: reply.content,
+            content: reason,
             role_title: reply.role_title,
             images: reply.images,
             reply_time: reply.created_at_text
           });
-        });
-      }
-      if (data.status == "pending") {
-        result.push({
-          type: "tips",
-          title: "提示"
         });
       }
       if (data.status == "resolved") {
@@ -101,7 +128,14 @@ const _sfc_main = {
           content: "撤回申诉"
         });
       }
-      common_vendor.index.__f__("log", "at pages/complaint/index.vue:370", result);
+      if (data.status == "completed") {
+        result.push({
+          type: "completed",
+          title: "",
+          content: data.summary
+        });
+      }
+      common_vendor.index.__f__("log", "at pages/complaint/index.vue:491", result);
       steps.value = result;
     };
     const showimage = (e) => {
@@ -121,48 +155,55 @@ const _sfc_main = {
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.p({
-          color: "#fff",
-          type: "help",
-          size: "18"
-        }),
-        b: common_vendor.p({
           name: "help",
           color: "#fff"
         }),
-        c: common_vendor.t(detail.value.bonus_tera),
-        d: common_vendor.p({
+        b: common_vendor.t(detail.value.settle_data.config.tera_ratio),
+        c: common_vendor.p({
           name: "right",
           color: "#fff"
         }),
-        e: common_vendor.o(($event) => linkTo(`/pages/room/room?room_id=${room_id.value}`)),
-        f: !detail.value.is_seller
-      }, !detail.value.is_seller ? {} : {
-        g: common_vendor.t(detail.value.final_income),
-        h: common_vendor.t(detail.value.has_card),
-        i: common_vendor.t(detail.value.final_income)
+        d: common_vendor.o(($event) => linkTo(`/pages/room/room?room_id=${room_id.value}`)),
+        e: !detail.value.is_seller
+      }, !detail.value.is_seller ? {
+        f: common_vendor.t(common_vendor.unref(util_formatNumber.formatWan)(detail.value.my_info.bonus)),
+        g: common_vendor.t(detail.value.my_info.final_yuan),
+        h: common_vendor.t(detail.value.my_info.final_yuan),
+        i: common_vendor.t(detail.value.my_info.car_fee),
+        j: common_vendor.t(detail.value.my_info.deposit)
+      } : {
+        k: common_vendor.t(detail.value.my_info.bonus_yuan),
+        l: common_vendor.t(detail.value.my_info.card_bonus_yuan),
+        m: common_vendor.t(detail.value.my_info.final_yuan)
       }, {
-        j: common_vendor.w(({
+        n: common_vendor.w(({
           item,
           index
         }, s0, i0) => {
           return common_vendor.e({
             a: item.type == "step1"
-          }, item.type == "step1" ? {
-            b: common_vendor.t(detail.value.tera_cost),
-            c: common_vendor.f(detail.value.image_urls, (settlement, i, i1) => {
+          }, item.type == "step1" ? common_vendor.e({
+            b: common_vendor.t(detail.value.settle_data.tera_cost),
+            c: detail.value.settle_data.has_card
+          }, detail.value.settle_data.has_card ? {} : {}, {
+            d: detail.value.settle_data.has_card
+          }, detail.value.settle_data.has_card ? {
+            e: common_vendor.t(detail.value.settle_data.card_price)
+          } : {}, {
+            f: common_vendor.f(detail.value.settle_imgs, (settle_imgs, i, i1) => {
               return {
-                a: common_vendor.o(($event) => showimage(settlement), i),
-                b: settlement,
+                a: common_vendor.o(($event) => showimage(settle_imgs), i),
+                b: settle_imgs,
                 c: i
               };
             }),
-            d: index
-          } : {}, {
-            e: item.type == "step2"
+            g: index
+          }) : {}, {
+            h: item.type == "step2"
           }, item.type == "step2" ? {
-            f: common_vendor.f(detail.value.members, (membersItem, index1, i1) => {
+            i: common_vendor.f(detail.value.members, (membersItem, index1, i1) => {
               return common_vendor.e({
-                a: "0b10032c-4-" + i0 + "-" + i1 + ",0b10032c-3",
+                a: "0b10032c-3-" + i0 + "-" + i1 + ",0b10032c-2",
                 b: common_vendor.p({
                   size: "70rpx",
                   url: membersItem.hero_avatar
@@ -178,28 +219,86 @@ const _sfc_main = {
                 i: index1
               });
             }),
-            g: index
+            j: index
           } : {}, {
-            h: i0,
-            i: s0
+            k: item.type == "complaintsTips"
+          }, item.type == "complaintsTips" ? {
+            l: "0b10032c-4-" + i0 + ",0b10032c-2",
+            m: common_vendor.p({
+              color: "#333",
+              type: "info",
+              size: "34"
+            })
+          } : {}, {
+            n: item.type == "complaints"
+          }, item.type == "complaints" ? common_vendor.e({
+            o: "0b10032c-5-" + i0 + ",0b10032c-2",
+            p: common_vendor.p({
+              size: "70rpx",
+              url: item.hero_avatar
+            }),
+            q: common_vendor.t(item.resist_power),
+            r: common_vendor.t(item.hero_name),
+            s: common_vendor.t(item.role_title),
+            t: common_vendor.t(item.hero_nickname),
+            v: common_vendor.t(item.content),
+            w: item.images && item.images.length
+          }, item.images && item.images.length ? common_vendor.e({
+            x: item.images && item.images.length
+          }, item.images && item.images.length ? {
+            y: common_vendor.f(item.images, (replyImg, i, i1) => {
+              return {
+                a: common_vendor.o(($event) => showimage(replyImg), i),
+                b: replyImg,
+                c: i
+              };
+            })
+          } : {}) : {}) : {}, {
+            z: item.type == "tips"
+          }, item.type == "tips" ? {
+            A: "0b10032c-6-" + i0 + ",0b10032c-2",
+            B: common_vendor.p({
+              color: "#333",
+              type: "info",
+              size: "34"
+            })
+          } : {}, {
+            C: item.type == "completed"
+          }, item.type == "completed" ? {
+            D: common_vendor.t(item.content)
+          } : {}, {
+            E: i0,
+            F: s0
           });
         }, {
           name: "d",
-          path: "j",
-          vueId: "0b10032c-3"
+          path: "n",
+          vueId: "0b10032c-2"
         }),
-        k: common_vendor.p({
+        o: common_vendor.p({
           items: steps.value,
           direction: "column",
           current: steps.value.length - 0
         }),
-        l: common_vendor.p({
+        p: common_vendor.p({
           color: "#00aaff",
           type: "headphones",
           size: "14"
         }),
-        m: pageType.value
-      }, pageType.value ? {} : {});
+        q: detail.value.status != "completed"
+      }, detail.value.status != "completed" ? common_vendor.e({
+        r: detail.value.can_submit_complaint
+      }, detail.value.can_submit_complaint ? {
+        s: common_vendor.o(($event) => linkTo(`/pages/complaint/send?room_id=${detail.value.room_id}`))
+      } : {}, {
+        t: detail.value.can_reply_complaint
+      }, detail.value.can_reply_complaint ? {
+        v: common_vendor.o(($event) => linkTo(`/pages/complaint/reply?complaint_id=${detail.value.complaint_id}`))
+      } : {}, {
+        w: detail.value.show_confirm_button
+      }, detail.value.show_confirm_button ? {
+        x: common_vendor.o(confirmSettlement)
+      } : {}) : {});
     };
   }
 };

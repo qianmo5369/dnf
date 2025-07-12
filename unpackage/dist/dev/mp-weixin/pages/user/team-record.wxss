@@ -1,34 +1,34 @@
 
 .team-record-page.data-v-e83a8c56 {
-  background: #fff;
-  /* min-height: 100vh; */
+		background: #fff;
+		/* min-height: 100vh; */
 }
 .tabs.data-v-e83a8c56 {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 20rpx 30rpx;
-  background: #fff;
-  /* border-bottom: 1rpx solid #eee; */
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		padding: 20rpx 30rpx;
+		background: #fff;
+		/* border-bottom: 1rpx solid #eee; */
 }
 .tab.data-v-e83a8c56 {
-  font-size: 28rpx;
-  color: #666;
-  margin-right: 40rpx;
-  padding-bottom: 10rpx;
-  position: relative;
+		font-size: 28rpx;
+		color: #666;
+		margin-right: 40rpx;
+		padding-bottom: 10rpx;
+		position: relative;
 }
 .tab.active.data-v-e83a8c56 {
-  color: #007aff;
-  font-weight: bold;
+		color: #007aff;
+		font-weight: bold;
 }
-.line.data-v-e83a8c56{
-	width: 100%;
-	height: 30rpx;
-	background: #f8f8f8;
+.line.data-v-e83a8c56 {
+		width: 100%;
+		height: 30rpx;
+		background: #f8f8f8;
 }
 
-/* .tab.active::after {
+	/* .tab.active::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -39,59 +39,234 @@
   border-radius: 2rpx;
 } */
 .record-list.data-v-e83a8c56 {
-  padding: 20rpx;
+		padding: 20rpx;
+		/* height: 80vh; */
 }
 .record-item.data-v-e83a8c56 {
-  display: flex;
-  padding: 20rpx;
-  background: #fff;
-  border-radius: 16rpx;
-  /* box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05); */
-  margin-bottom: 20rpx;
-  align-items: flex-start;
-  border-bottom: 1rpx solid #eee;
+		position: relative;
+		display: flex;
+		padding: 20rpx;
+		background: #fff;
+		border-radius: 16rpx;
+		/* box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05); */
+		margin-bottom: 20rpx;
+		align-items: flex-start;
+		border-bottom: 1rpx solid #eee;
 }
 .avatar.data-v-e83a8c56 {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  margin-right: 20rpx;
+		width: 80rpx;
+		height: 80rpx;
+		border-radius: 50%;
+		margin-right: 20rpx;
 }
 .info.data-v-e83a8c56 {
-  flex: 1;
+		flex: 1;
 }
 .top.data-v-e83a8c56 {
-  font-size: 26rpx;
-  color: #333;
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
+		font-size: 26rpx;
+		color: #333;
+		display: flex;
+		align-items: center;
+		gap: 12rpx;
 }
 .bottom.data-v-e83a8c56 {
-  margin-top: 10rpx;
-  font-size: 24rpx;
-  color: #888;
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
+		margin-top: 10rpx;
+		font-size: 24rpx;
+		color: #888;
+		display: flex;
+		align-items: center;
+		gap: 20rpx;
 }
 .tag.data-v-e83a8c56 {
-  padding: 6rpx 18rpx;
-  border-radius: 10rpx;
-  font-size: 22rpx;
-  color: #fff;
+		padding: 6rpx 18rpx;
+		border-radius: 10rpx;
+		font-size: 22rpx;
+		color: #fff;
 }
 .tag.red.data-v-e83a8c56 {
-  background: #f56c6c;
+		background: #f56c6c;
 }
 .tag.blue.data-v-e83a8c56 {
-  background: #409eff;
+		background: #409eff;
 }
 .right.data-v-e83a8c56 {
-  text-align: right;
-  color: #999;
-  font-size: 24rpx;
+		text-align: right;
+		color: #999;
+		font-size: 24rpx;
 }
 .status.data-v-e83a8c56 {
-  margin-bottom: 10rpx;
+		margin-bottom: 10rpx;
+}
+.item.data-v-e83a8c56 {
+		border-bottom: 1rpx solid #eee
+}
+.item__content.data-v-e83a8c56 {
+		color: #333;
+		padding: 34rpx 0
+}
+.item__content.data-v-e83a8c56,
+	.item__header.data-v-e83a8c56 {
+		display: flex;
+		justify-content: space-between
+}
+.item__header.data-v-e83a8c56 {
+		margin-bottom: 20rpx
+}
+.item__gameType.data-v-e83a8c56,
+	.item__header.data-v-e83a8c56 {
+		align-items: center
+}
+.item__gameType.data-v-e83a8c56 {
+		color: #333;
+		display: flex;
+		font-size: 28rpx;
+		justify-content: flex-end
+}
+.item__playType.data-v-e83a8c56 {
+		border-radius: 10rpx;
+		color: #fff;
+		font-size: 22rpx;
+		margin-left: 20rpx;
+		padding: 6rpx 14rpx
+}
+.item__type.data-v-e83a8c56 {
+		background-color: #0283ff;
+		border-radius: 8rpx;
+		color: #fff;
+		font-size: 22rpx;
+		margin-right: 14rpx;
+		padding: 2rpx 20rpx
+}
+.item__status.data-v-e83a8c56 {
+		/* color: #0283ff; */
+		color: #777;
+		font-size: 26rpx;
+		font-weight: 500;
+		margin-left: 20rpx
+}
+.completed.data-v-e83a8c56{
+		color: #000 !important;
+}
+.item__type.drag.data-v-e83a8c56 {
+		background-color: #f54a4a
+}
+.item__footer.data-v-e83a8c56 {
+		justify-content: space-between
+}
+.item__name.data-v-e83a8c56 {
+		color: #777;
+		font-size: 24rpx
+}
+.item__capacity.data-v-e83a8c56 {
+		color: #666;
+		font-size: 26rpx;
+		font-weight: 400
+}
+.item__time.data-v-e83a8c56 {
+		color: #999;
+		font-size: 24rpx;
+		text-align: right
+}
+.item__btn.data-v-e83a8c56 {
+		justify-content: flex-end
+}
+.item__btn.data-v-e83a8c56,
+	.item__footer.data-v-e83a8c56 {
+		align-items: center;
+		display: flex
+}
+.item__footer.data-v-e83a8c56 {
+		color: #666;
+		font-size: 24rpx;
+		justify-content: flex-start;
+		padding-bottom: 24rpx
+}
+.item__footer__icon.data-v-e83a8c56 {
+		color: #ea331e;
+		font-size: 26rpx;
+		margin-right: 10rpx
+}
+.item__footer__amount.data-v-e83a8c56 {
+		color: #ea331e;
+		font-weight: 600;
+		margin: 0 4rpx
+}
+.item__footer__content.data-v-e83a8c56 {
+		align-items: center;
+		display: flex;
+		justify-content: space-between;
+		width: 100%
+}
+.item__footer__content__rate.data-v-e83a8c56 {
+		background-color: #faece9;
+		border-radius: 8rpx;
+		color: #ea331e;
+		flex-shrink: 0;
+		font-size: 24rpx;
+		max-width: -webkit-fit-content;
+		max-width: fit-content;
+		padding: 4rpx 14rpx
+}
+.item__btn__item.data-v-e83a8c56 {
+		border: 1rpx solid #42b861;
+		border-radius: 30rpx;
+		color: #42b861;
+		font-size: 26rpx;
+		margin-top: 20rpx;
+		padding: 6rpx 30rpx
+}
+.role.data-v-e83a8c56 {
+		align-items: center;
+		display: flex
+}
+.role__avatar.data-v-e83a8c56 {
+		border-radius: 50%;
+		height: 90rpx;
+		margin-right: 14rpx;
+		width: 90rpx
+}
+.role__type.data-v-e83a8c56 {
+		align-items: center;
+		display: flex;
+		font-size: 30rpx
+}
+.role__name.data-v-e83a8c56 {
+		color: #777;
+		font-size: 26rpx;
+		margin-left: 14rpx
+}
+.item__tuanben.data-v-e83a8c56 {
+		align-items: center;
+		color: #777;
+		display: flex;
+		font-size: 26rpx;
+		margin-top: 10rpx
+}
+.item__tuanben__icon.data-v-e83a8c56 {
+		font-size: 24rpx;
+		margin-right: 10rpx
+}
+.dps.data-v-e83a8c56 {
+		background: #ff4d4f;
+		color: #fff;
+}
+.leader.data-v-e83a8c56 {
+		background: #1677ff;
+		color: #fff;
+}
+.support.data-v-e83a8c56 {
+		background: #00c292;
+		color: #fff;
+}
+.baoche.data-v-e83a8c56 {
+		background: #5b2ae5;
+		color: #fff;
+}
+.team.data-v-e83a8c56 {
+		background: #fbbd12;
+		color: #fff;
+}
+.deck.data-v-e83a8c56 {
+		background: #0198cc;
+		color: #fff;
 }

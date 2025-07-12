@@ -1,14 +1,15 @@
 <template>
 	<view class="container">
 		<view ref="budgetcontainer" class="budget-container">
+
 			<view class="budget-card">
 				<view class="budget-header">
 					<view class="header-left">
-						<uni-icons class="header-icon" color="#fff" type="help" size="18"></uni-icons>
+						<!-- <uni-icons class="header-icon" color="#fff" type="help" size="18"></uni-icons> -->
 						<TnIcon name="help" color="#fff" />
 						<text class="header-text1">本次费用预算</text>
 						<view class="ratio-badge">
-							比例{{detail.bonus_tera}}
+							比例{{detail.settle_data.config.tera_ratio}}
 						</view>
 					</view>
 					<view class="header-right" @tap="linkTo(`/pages/room/room?room_id=${room_id}`)">
@@ -19,24 +20,24 @@
 				<view class="budget-content">
 					<view class="content-section" v-if="!detail.is_seller">
 						<view class="content-item">
-							分红泰拉: 0.47万(拍卖手续费平摊)
+							分红泰拉: {{formatWan(detail.my_info.bonus)}}(拍卖手续费平摊)
 						</view>
 						<view class="content-item">
-							总费用: 1.04元(泰拉费用1.04，车费0)
+							总费用: {{detail.my_info.final_yuan}}元(泰拉费用{{detail.my_info.final_yuan}}，车费{{detail.my_info.car_fee}})
 						</view>
 						<view class="content-item">
-							押金: 100元
+							押金: {{detail.my_info.deposit}}元
 						</view>
 					</view>
 					<view class="content-section" v-else>
 						<view class="content-item">
-							泰拉收益: {{detail.final_income}}元
+							泰拉收益: {{detail.my_info.bonus_yuan}}元
 						</view>
 						<view class="content-item">
-							卡片分红: {{detail.has_card}}元
+							卡片分红: {{detail.my_info.card_bonus_yuan}}元
 						</view>
 						<view class="content-item">
-							预计收益: {{detail.final_income}}元
+							预计收益: {{detail.my_info.final_yuan}}元
 						</view>
 						<!-- <view class="content-item with-icon">
 							<image class="item-icon" src="/static/uni.png" mode="heightFix"></image>
@@ -55,20 +56,26 @@
 						<view class="card-content">
 							<view class="card-row">
 								<text>卖家花费泰拉：</text>
-								<text class="highlight-red">{{detail.tera_cost}}万</text>
+								<text class="highlight-red">{{detail.settle_data.tera_cost}}万</text>
 							</view>
 							<view class="card-row">
 								<text>是否有可交易卡片：</text>
-								<text>无</text>
+								<text v-if="detail.settle_data.has_card">有</text>
+								<text v-else>无</text>
+							</view>
+							<view class="card-row" v-if="detail.settle_data.has_card">
+								<text>卡片低一档拍卖价格：</text>
+								<text class="highlight-red">{{detail.settle_data.card_price}}万</text>
+
 							</view>
 							<view class="card-row image-row">
 								<text>相关截图：</text>
-								<image @tap="showimage(settlement)" class="settlement-img" v-for="(settlement,i) in detail.image_urls" :src="settlement" :key="i" mode="aspectFit" />
+								<image @tap="showimage(settle_imgs)" class="settlement-img" v-for="(settle_imgs,i) in detail.settle_imgs" :src="settle_imgs" :key="i" mode="aspectFit" />
 							</view>
 						</view>
 					</view>
 					
-					<view v-if="item.type ==  'step2'" class="confirmation-list" :key="index">
+					<view v-if="item.type == 'step2'" class="confirmation-list" :key="index">
 			
 							<view class="confirmation-item" v-for="(membersItem,index1) in detail.members" :key="index1">
 								<!-- <image src="/static/logo.png" mode="aspectFill" class="confirmation-avatar">
@@ -82,9 +89,70 @@
 									<view class="confirmation-comment">{{membersItem.hero_nickname}}</view>
 								</view>
 								<text class="confirmation-status" v-if="membersItem.confirmed == 0">待确认</text>
-								<text class="confirmation-status" v-if="membersItem.confirmed == 1">已确认</text>
+								<text class="confirmation-status green" v-if="membersItem.confirmed == 1">已确认</text>
 							</view>
 					</view>
+					
+					<view v-if="item.type ==  'complaintsTips'" class="notice-card">
+						<view class="notice-content">
+							<uni-icons class="notice-icon" color="#333" type="info" size="34"></uni-icons>
+							<view class="notice-text">
+								<!-- <view>结算单存在异议</view> -->
+								<view><text class="highlight-red">结算单存在异议将由平台审核结算</text></view>
+							</view>
+						</view>
+					</view>
+					
+					
+					<view class="timeline-card" v-if="item.type == 'complaints'" >
+						<view class="card-content">
+							<view class="character-info">
+								<!-- <image src="/static/logo.png" mode="aspectFill" class="character-avatar"></image> -->
+								<TnAvatar class="character-avatar" size="70rpx" :url="item.hero_avatar" />
+								<view class="character-details">
+									<view class="character-name-row">
+										<text class="character-name">{{item.resist_power}}{{item.hero_name}}</text>
+										<text class="team-tag">{{item.role_title}}</text>
+									</view>
+									<view class="character-nickname">{{item.hero_nickname}}</view>
+								</view>
+							</view>
+							<view class="card-row">
+								<text>内容：</text>
+								<text>{{item.content}}</text>
+							</view>
+							<view class="card-row image-row" v-if="item.images && item.images.length">
+								<text>相关截图：</text>
+								<view class="reply-images" v-if="item.images && item.images.length">
+									<image @tap="showimage(replyImg)" class="reply-img" v-for="(replyImg,i) in item.images" :src="replyImg" :key="i" mode="aspectFit" />
+								</view>
+								<!-- <image @click="showimage('/static/uni.png')" src="/static/uni.png"
+									mode="aspectFill" class="card-image"></image> -->
+							</view>
+						</view>
+					</view>
+					
+					
+					<view v-if="item.type ==  'tips'" class="notice-card">
+						<view class="notice-content">
+							<uni-icons class="notice-icon" color="#333" type="info" size="34"></uni-icons>
+							<view class="notice-text">
+								<view>若结算单未存在异议</view>
+								<view>房间完成 <text class="highlight-red">10分钟后</text> 将由平台审核结算</view>
+							</view>
+						</view>
+					</view>
+					
+					
+					<view v-if="item.type ==  'completed'" class="notice-card">
+						<view class="notice-content">
+							<view class="notice-text">
+								<view>结算完成,由平台确认完成</view>
+								<view>{{item.content}}</view>
+							</view>
+						</view>
+					</view>
+					
 					
 					
 				</template>
@@ -237,11 +305,14 @@
 				<uni-icons class="customer-service-icon" color="#00aaff" type="headphones" size="14"></uni-icons>
 				<text class="customer-service-text">联系客服</text>
 			</view>
-			<view v-if="pageType" class="action-buttons">
-				<view class="action-button dispute-button">
+			<view class="action-buttons" v-if="detail.status != 'completed'">
+				<view v-if="detail.can_submit_complaint" @tap="linkTo(`/pages/complaint/send?room_id=${detail.room_id}`)" class="action-button dispute-button">
 					发起异议
 				</view>
-				<view class="action-button confirm-button">
+				<view v-if="detail.can_reply_complaint" @tap="linkTo(`/pages/complaint/reply?complaint_id=${detail.complaint_id}`)" class="action-button dispute-button">
+					加入回复
+				</view>
+				<view @tap="confirmSettlement" v-if="detail.show_confirm_button" class="action-button confirm-button">
 					确认结算
 				</view>
 			</view>
@@ -262,6 +333,8 @@
 	import fuiSteps from "@/components/fui-steps.vue"
 	import TnAvatar from '@/uni_modules/tuniaoui-vue3/components/avatar/src/avatar.vue'
 	import TnIcon from '@/uni_modules/tuniaoui-vue3/components/icon/src/icon.vue'
+	import { formatWan } from '@/util/formatNumber.js'
+	import ws from '@/util/ws.js'
 	const pageType = ref(false); //true:结算中    false:结算完成
 	const containerHeight = ref('100vh');
 	const budgetcontainer = ref(null)
@@ -304,9 +377,22 @@
 		}
 	}
 	
+	const confirmSettlement =  async () => {
+		const res = await uni.$http.post('/room/confirmSettlement', {
+			room_id: room_id.value
+		})
+		if (res.code === 1) {
+			getSettlementDetail()
+		}
+	}
+	
 	onMounted(() => {
 getSettlementDetail()
-		
+		ws.on('confirmSettlement', (msg) => {
+			console.log("泰拉车结算更新");
+			detail.value = msg.data;
+			buildSteps(msg.data);
+		})
 		
 	});
 	
@@ -323,20 +409,50 @@ getSettlementDetail()
 			type: 'step2',
 			title: "买家确认结算",
 		})
+		
+		// if (data.status == 'pending') {
+		// 	result.push({
+		// 		type: 'tips',
+		// 		title:"提示"
+		// 	})
+		// }
+		
+		if(data.complaint_thread.length>0){
+			result.push({
+				type: 'tips',
+				title: "",
+			})
+		}
+		
 	
 		// 第二步及以后：回复内容
-		if (Array.isArray(data.replies)) {
-	
-			data.replies.forEach(reply => {
-				console.log(reply);
+		if (Array.isArray(data.complaint_thread)) {
+			
+			
+			if(data.complaint_thread.length>0){
 				result.push({
-					type: 'reply',
-					title:"回复",
+					type: 'complaintsTips',
+					title:"平台介入"
+				})
+			}
+			data.complaint_thread.forEach(reply => {
+				console.log(reply);
+				
+				let reason = '';
+				if(reply.is_topic == 1){
+					reason = reply.reason
+				}else{
+					reason = reply.content
+				}
+				
+				result.push({
+					type: 'complaints',
+					title:"买家发起争议",
 					nickname: reply.nickname,
 					hero_avatar: reply.hero_avatar,
 					hero_name: reply.hero_name,
 					hero_nickname: reply.hero_nickname,
-					content: reply.content,
+					content: reason,
 					role_title: reply.role_title,
 					images:reply.images,
 					reply_time: reply.created_at_text
@@ -344,12 +460,9 @@ getSettlementDetail()
 			})
 		}
 	
-		if (data.status == 'pending') {
-			result.push({
-				type: 'tips',
-				title:"提示"
-			})
-		}
+		
+		
+		
 		
 		if (data.status == 'resolved') {
 			result.push({
@@ -364,6 +477,14 @@ getSettlementDetail()
 				type: 'status',
 				title:"处理完成",
 				content:"撤回申诉"
+			})
+		}
+		
+		if(data.status == 'completed'){
+			result.push({
+				type: 'completed',
+				title:"",
+				content:data.summary
 			})
 		}
 		
@@ -819,5 +940,11 @@ getSettlementDetail()
 
 	.header-text1 {
 		margin: 0 15rpx;
+	}
+	
+	.reply-img{
+		width: 150rpx;
+		height: 100rpx;
+		margin-right: 20rpx;
 	}
 </style>

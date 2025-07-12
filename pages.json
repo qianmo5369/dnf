@@ -123,6 +123,22 @@
 			{
 				"navigationBarTitleText" : "申诉记录"
 			}
+		},
+		{
+			"path" : "pages/user/setting",
+			"style" : 
+			{
+				"navigationBarTitleText" : "设置",
+				"enablePullDownRefresh": false,
+				"disableScroll": true
+			}
+		},
+		{
+			"path" : "pages/room/detail",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
 		}
 	],
 	"globalStyle": {

@@ -15,7 +15,9 @@
     "pages/complaint/send",
     "pages/complaint/reply",
     "pages/complaint/index",
-    "pages/user/complaint-record"
+    "pages/user/complaint-record",
+    "pages/user/setting",
+    "pages/room/detail"
   ],
   "window": {
     "navigationBarTextStyle": "black",

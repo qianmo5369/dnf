@@ -24,6 +24,7 @@
 /* 透明度 */
 /* 文章场景相关 */
 .room-container.data-v-49055c66 {
+  position: fixed;
   width: 100%;
   top: 0;
   background-color: #fff;
@@ -31,7 +32,33 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+}
+.message-wrap.data-v-49055c66 {
+  height: 0;
+  flex: 1;
+}
+.message-wrap .scroll-list.data-v-49055c66 {
+  height: 100%;
+  transform: scaleY(-1);
+}
+.message-wrap .message-item-wrap.data-v-49055c66 {
+  min-height: 100%;
+  transform: scaleY(-1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 40rpx;
+}
+.message-wrap .loading-wrap.data-v-49055c66 {
+  transform: scaleY(-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10rpx;
+}
+.room-tag-icon.data-v-49055c66 {
+  width: 30rpx;
+  height: 30rpx;
 }
 .room-header.data-v-49055c66 {
   /* background-image: url('https://dnf.hanyunkeji.cn/static/room/20.png'); */
@@ -91,7 +118,11 @@
   width: 100%;
   /* height: 100rpx; */
   bottom: 20rpx;
-  padding: 0rpx 20rpx;
+}
+.team-tips-item.data-v-49055c66 {
+  color: red;
+  font-size: 26rpx;
+  margin: 5rpx 0rpx;
 }
 .room-status.data-v-49055c66 {
   display: flex;
@@ -101,13 +132,24 @@
 .room-time.data-v-49055c66 {
   margin-left: auto;
 }
+.room-tag.data-v-49055c66 {
+  border-radius: 0rpx 50rpx 50rpx 0rpx;
+}
+.room-time.data-v-49055c66 {
+  border-radius: 50rpx 0rpx 0rpx 50rpx;
+}
 .room-tag.data-v-49055c66,
 .room-time.data-v-49055c66 {
   background: rgba(0, 0, 0, 0.8);
-  border-radius: 30rpx;
   padding: 15rpx 30rpx;
   font-size: 28rpx;
   font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.room-tag-label.data-v-49055c66 {
+  margin-left: 10rpx;
 }
 .room-members.data-v-49055c66 {
   padding: 20rpx;
@@ -169,9 +211,21 @@
   border-radius: 20rpx;
 }
 .room-chat.data-v-49055c66 {
-  padding: 0 20rpx;
   flex: 1;
   overflow-y: auto;
+}
+.Profit.data-v-49055c66 {
+  color: #007aff;
+  font-size: 30rpx;
+  font-weight: 500;
+  margin: 10rpx 0rpx;
+}
+.sumProfit.data-v-49055c66 {
+  color: red;
+  font-size: 30rpx;
+  font-weight: 500;
+  width: 100%;
+  text-align: center;
 }
 .chat-msg.data-v-49055c66 {
   /* background: #2a2a38; */
@@ -210,7 +264,7 @@
   text-align: center;
 }
 .room-chat.data-v-49055c66 {
-  padding: 20rpx;
+  padding: 0rpx 20rpx;
 }
 .chat-msg.data-v-49055c66 {
   margin-bottom: 20rpx;
@@ -240,7 +294,7 @@
 }
 .room-footer.data-v-49055c66 {
   background: #f8f8f8;
-  z-index: 3000;
+  z-index: 1;
   /* border-top: 1rpx solid #333; */
 }
 .input-layout.data-v-49055c66 {
@@ -263,18 +317,18 @@
   height: 48rpx;
 }
 .chat-input.data-v-49055c66 {
-  height: 72rpx;
+  height: 82rpx;
   display: flex;
   align-items: center;
   background: #fff;
   border-radius: 10 rpx;
-  padding: 8rpx 16rpx;
+  padding: 16rpx;
 }
 .input.data-v-49055c66 {
   flex: 1;
   background: transparent;
   color: #000;
-  font-size: 24rpx;
+  font-size: 26rpx;
   border: none;
   outline: none;
 }
@@ -347,6 +401,10 @@
 .reset-btn.data-v-49055c66 {
   background: #1677ff;
   box-shadow: 0rpx 4rpx 9rpx 0rpx rgba(33, 56, 225, 0.98);
+}
+.game-link-btn.data-v-49055c66 {
+  background: #800002;
+  box-shadow: 0rpx 4rpx 9rpx 0rpx #fc0107;
 }
 .forced-two-line.data-v-49055c66 {
   display: flex;
@@ -549,6 +607,7 @@
   background-color: #fff;
   display: flex;
   flex-direction: column;
+  height: 70vh;
   /* padding: 0rpx 40rpx; */
 }
 .phras-item.data-v-49055c66 {
@@ -571,7 +630,7 @@
   text-align: center;
   font-size: 30rpx;
   padding: 24rpx;
-  color: #3366ff;
+  color: #007aff;
   border-bottom: 1rpx solid #eee;
 }
 .fui-icon__close.data-v-49055c66 {
@@ -613,6 +672,7 @@
   flex: 1;
   text-align: right;
   color: #333;
+  font-size: 30rpx !important;
 }
 .input-with-unit.data-v-49055c66 {
   display: flex;
@@ -622,7 +682,7 @@
 }
 .unit.data-v-49055c66 {
   font-size: 28rpx;
-  color: #666;
+  color: #888;
 }
 .circle-radio-group.data-v-49055c66 {
   display: flex;
@@ -674,11 +734,13 @@
 } */
 .upload-text.data-v-49055c66 {
   font-size: 24rpx;
-  color: #888;
   margin-top: 10rpx;
 }
 .popup-footer.data-v-49055c66 {
-  margin: 30rpx;
+  width: 100%;
+  padding: 30rpx;
+  position: absolute;
+  bottom: 20rpx;
 }
 .submit-btn.data-v-49055c66 {
   background-color: #007aff;
@@ -708,14 +770,13 @@
   flex-wrap: wrap;
 }
 .summary-label.data-v-49055c66 {
-  font-weight: bold;
   font-size: 28rpx;
-  color: #666;
+  color: #888;
   margin-right: 10rpx;
 }
 .value.data-v-49055c66 {
   font-size: 28rpx;
-  color: #666;
+  color: #888;
 }
 .images.data-v-49055c66 {
   display: flex;
@@ -757,6 +818,12 @@
   border-radius: 12rpx;
   padding: 10rpx 20rpx;
   font-size: 26rpx;
+}
+.btn-default.data-v-49055c66 {
+  box-sizing: border-box;
+  height: 60rpx !important;
+  display: flex;
+  align-items: center;
 }
 .bottom-status.data-v-49055c66 {
   position: absolute;
@@ -813,4 +880,75 @@
 }
 .fui-del__box.data-v-49055c66:active {
   background-color: #ddd;
+}
+.game-link-popup-header.data-v-49055c66 {
+  text-align: center;
+  font-size: 30rpx;
+  padding: 24rpx;
+  color: #000;
+  font-weight: 500;
+  border-bottom: 1rpx solid #eee;
+}
+.fui-icon__close.data-v-49055c66 {
+  position: absolute;
+  top: 24rpx;
+  right: 54rpx;
+}
+.game-link-card-box.data-v-49055c66 {
+  position: relative;
+}
+.game-link-content.data-v-49055c66 {
+  padding: 0rpx 20rpx;
+  height: 230rpx;
+}
+.link-input-box.data-v-49055c66 {
+  margin: 30rpx 0rpx;
+  display: flex;
+  align-items: center;
+}
+.paste-btm.data-v-49055c66 {
+  margin: 0rpx 20rpx;
+  background-color: #3366ff;
+  color: #fff;
+  padding: 15rpx;
+  font-size: 28rpx;
+  border-radius: 10rpx;
+  text-align: center;
+}
+.game-link-input.data-v-49055c66 {
+  color: #333;
+  flex: 1;
+}
+.link-desc.data-v-49055c66 {
+  margin-top: 40rpx;
+  color: darkred;
+  font-size: 28rpx;
+}
+.link-btn-layout.data-v-49055c66 {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 100rpx;
+  border-top: 1rpx solid #eee;
+}
+.link-btn-close.data-v-49055c66 {
+  width: 50%;
+  color: #000;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  border-radius: 10rpx;
+  text-align: center;
+}
+.link-btn.data-v-49055c66 {
+  width: 50%;
+  color: #3366ff;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  border-radius: 10rpx;
+  text-align: center;
+}
+.line.data-v-49055c66 {
+  width: 1rpx;
+  height: 100%;
+  background: #eee;
 }

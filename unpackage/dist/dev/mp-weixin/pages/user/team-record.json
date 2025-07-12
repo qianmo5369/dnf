@@ -2,5 +2,7 @@
   "navigationBarTitleText": "组队记录",
   "enablePullDownRefresh": true,
   "disableScroll": true,
-  "usingComponents": {}
+  "usingComponents": {
+    "z-paging": "../../uni_modules/z-paging/components/z-paging/z-paging"
+  }
 }

@@ -13,7 +13,7 @@ uni_modules_tuniaouiVue3_utils_vue_props_runtime.buildProp({
   values: uni_modules_tuniaouiVue3_constants_size.componentSizes,
   required: false
 });
-uni_modules_tuniaouiVue3_utils_vue_props_runtime.buildProp({
+const useFormSizeProps = uni_modules_tuniaouiVue3_utils_vue_props_runtime.buildProp({
   type: String,
   values: uni_modules_tuniaouiVue3_constants_size.formComponentSizes,
   required: false
@@ -34,4 +34,5 @@ exports.useComponentBoolean = useComponentBoolean;
 exports.useComponentCustomStyleProp = useComponentCustomStyleProp;
 exports.useComponentIndexProp = useComponentIndexProp;
 exports.useComponentSafeAreaInsetBottomProp = useComponentSafeAreaInsetBottomProp;
+exports.useFormSizeProps = useFormSizeProps;
 //# sourceMappingURL=../../../../../../../.sourcemap/mp-weixin/uni_modules/tuniaoui-vue3/components/base/composables/use-component-common-props/index.js.map

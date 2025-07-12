@@ -1,32 +1,43 @@
 <template>
 	<view class="login-page">
 		<view class="login-box">
-			<text class="login-title">欢迎登录</text>
-
-
-			<input class="input" v-model="phone" placeholder="请输入账号" />
-			<view v-if="loginType === 'account'">
-				<input class="input" v-model="password" placeholder="请输入密码" password />
-			</view>
-
-			<view v-else>
-				<view class="input-wrapper">
-					<input class="input full" placeholder="请输入验证码" />
-					<text class="send-code-text" :class="{ disabled: countdown > 0 }" @click="sendCode">
-						{{ countdown > 0 ? countdown + 's后重试' : '发送验证码' }}
-					</text>
-				</view>
-			</view>
-
-			<button class="login-btn" @click="handleLogin">登录</button>
-		
-
-			<view class="login-switch">
-				<text :class="{ active: loginType === 'account' }" v-if="loginType === 'account'"
-					@click="loginType = 'code'">验证码登录</text>
-				<text :class="{ active: loginType === 'code' }" v-else @click="loginType = 'account'">账号密码登录</text>
-			</view>
-
+			
+			<!-- #ifdef APP-PLUS -->
+					<text class="login-title">欢迎登录</text>
+					<input class="input" v-model="phone" placeholder="请输入账号" />
+					<view v-if="loginType === 'account'">
+						<input class="input" v-model="password" placeholder="请输入密码" password />
+					</view>
+					
+					<view v-else>
+						<view class="input-wrapper">
+							<input class="input full" placeholder="请输入验证码" />
+							<text class="send-code-text" :class="{ disabled: countdown > 0 }" @click="sendCode">
+								{{ countdown > 0 ? countdown + 's后重试' : '发送验证码' }}
+							</text>
+						</view>
+					</view>
+					
+					<button class="login-btn" @click="handleLogin">登录</button>
+							
+					
+					<view class="login-switch">
+						<text :class="{ active: loginType === 'account' }" v-if="loginType === 'account'"
+							@click="loginType = 'code'">验证码登录</text>
+						<text :class="{ active: loginType === 'code' }" v-else @click="loginType = 'account'">账号密码登录</text>
+					</view>
+					
+			<!-- #endif -->
+			
+			
+			<!-- #ifdef MP-WEIXIN -->
+					<view class="login-logo">
+						<image src="https://dnf.hanyunkeji.cn/static/wechat_login.png" class="login-logo-icon" />
+					</view>
+					<button class="login-btn login-btn-wx" @click="mpLogin">微信一键登录</button>
+			<!-- #endif -->
+			
+			
 			<view class="agreement-check">
 				<radio :checked="isChecked" style="transform: scale(.7);" @click="isChecked = !isChecked"></radio>
 				<!-- <checkbox :checked="isChecked" @click="isChecked = !isChecked" class="checkbox" /> -->
@@ -34,18 +45,25 @@
 					登录即代表您已同意 <text class="link">《用户协议》</text> 和 <text class="link">《隐私政策》</text>
 				</view>
 			</view>
+			
+			<!-- #ifdef APP-PLUS -->
+				<view class="wechat-login" @click="mpLogin">
+					<image src="https://dnf.hanyunkeji.cn/static/wechat_login.png" class="wechat-icon" />
+					<text class="wechat-text">微信一键登录</text>
+				</view>
+			<!-- #endif -->
+				
+			
 
-			<view class="wechat-login" @click="mpLogin">
-				<image src="https://dnf.hanyunkeji.cn/static/wechat_login.png" class="wechat-icon" />
-				<text class="wechat-text">微信一键登录</text>
-			</view>
+			
 		</view>
 	</view>
 </template>
 
 <script setup>
 	import {
-		ref
+		ref,
+		onMounted
 	} from 'vue'
 	// import { showToast } from '@dcloudio/uni-ui'
 	import {
@@ -58,6 +76,13 @@
 	const password = ref('')
 	const code = ref('')
 	let timer = null;
+	const isWxMiniProgram = ref(false)
+	
+	
+	// 判断是否是微信小程序
+	onMounted(() => {
+	
+	})
 
 	const sendCode = async () => {
 		if (countdown.value > 0) {
@@ -225,7 +250,7 @@
 		flex-direction: column;
 		background: #fff;
 		border-radius: 24rpx;
-		padding: 60rpx 30rpx;
+		padding: 60rpx 0rpx;
 		/* box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.05); */
 	}
 
@@ -281,6 +306,19 @@
 		padding: 5rpx 0;
 		margin-top: 70rpx;
 		margin-bottom: 12rpx;
+	}
+	
+	.login-logo{
+		text-align: center;
+		margin-top: 300rpx;
+	}
+	.login-logo-icon{
+		width: 300rpx;
+		height: 300rpx;
+	}
+	.login-btn-wx{
+		background: #07ba05;
+		margin-bottom: 30rpx;
 	}
 
 	.login-switch {

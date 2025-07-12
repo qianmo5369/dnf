@@ -8,25 +8,26 @@ const http = new js_sdk_luchRequest_luchRequest_core_Request.Request({
   // 修改为你的地址
   timeout: 1e4,
   custom: {
-    auth: true
+    loading: true
     // 自定义字段示例
   }
 });
 http.interceptors.request.use((config) => {
+  var _a;
   const userStore = stores_user.useUserStore();
   if (userStore.token) {
     config.header.token = userStore.token;
   }
-  common_vendor.index.showLoading({
-    title: "加载中..."
-  });
+  if ((_a = config.custom) == null ? void 0 : _a.loading) {
+    common_vendor.index.__f__("log", "at util/request/index.js:23", "显示加载");
+  }
   return config;
 }, (error) => {
   return Promise.reject(error);
 });
 http.interceptors.response.use((response) => {
   common_vendor.index.hideLoading();
-  if (response.data.code === 1 || response.data.code === 200) {
+  if (response.data.code === 1 || response.data.code === 200 || response.data.code === 100) {
     return response.data;
   } else {
     common_vendor.index.showToast({
@@ -36,7 +37,7 @@ http.interceptors.response.use((response) => {
     return Promise.reject(response.data);
   }
 }, (error) => {
-  common_vendor.index.__f__("log", "at util/request/index.js:47", error.statusCode);
+  common_vendor.index.__f__("log", "at util/request/index.js:48", error.statusCode);
   if (error.statusCode == 401) {
     common_vendor.index.showToast({
       title: "请先登录",

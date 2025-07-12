@@ -21,7 +21,14 @@
 				</view>
 			</view>
 		</TnPopup>
-
+		
+		<z-paging
+		  ref="paging"
+		  v-model="fundList"
+		  @query="getFundLogs"
+			
+		>
+<template #top>
 		<!-- 顶部余额卡片 -->
 		<view class="balance-card">
 			<view class="balance-left">
@@ -34,15 +41,10 @@
 
 		<!-- 收支明细标题 -->
 		<view class="section-title">收支明细</view>
-
+</template>
 		<!-- 明细列表 -->
 		<view class="record-list">
-			<z-paging
-			  ref="paging"
-			  v-model="fundList"
-			  @query="getFundLogs"
-				:fixed="false"
-			>
+			
 			<view class="record-item" v-for="(item,index) in fundList" :key="item.id">
 				<view class="left">
 					<view class="title">
@@ -59,8 +61,10 @@
 					<!-- <view class="time">{{ item.time }}</view> -->
 				</view>
 			</view>
-			</z-paging>
+			
 		</view>
+		
+		</z-paging>
 
 		<!-- 充值按钮 -->
 		<!-- <view class="btn-footer">
@@ -240,7 +244,7 @@
 
 	.record-list {
 		padding: 0 24rpx;
-		height: 60vh;
+		// height: 60vh;
 	}
 
 	.record-item {

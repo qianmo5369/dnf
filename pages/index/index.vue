@@ -1,14 +1,17 @@
 <template>
 	<view class="container">
-		<view :style="{ height: navBarHeight + 'px' }" />
-		<!-- 顶部状态栏（真实系统状态） -->
-		<!-- <view class="real-status-bar"></view> -->
-
+	
+			
+			
+		<view style="background-color: #fff;" :style="{ height: navBarHeight + 'px' }" />
 		<fui-bottom-popup :show="show" zIndex="1000000">
 			<Roles v-model="show"></Roles>
 		</fui-bottom-popup>
-		
-		
+
+		<fui-dialog :show="dialogShow" :content="content" :confirmText="confirmText" maskClosable @click="onClick"
+			@close="dialogShow = false"></fui-dialog>
+		<TnModal ref="modalRef" />
+
 		<!-- 房间创建 -->
 		<TnPopup :model-value="shareShow" width="80%" height="415rpx" borderRadius="16rpx">
 			<view class="share-card-box">
@@ -27,24 +30,27 @@
 				</button>
 			</view>
 		</TnPopup>
-		
+
 		<TnPopup :model-value="contentShow" width="80%" height="60vh" borderRadius="16rpx">
 			<Parse v-if="contentShow" v-model="contentShow" :contentId="contentId"></Parse>
 		</TnPopup>
-
-		
-
-		<TnPopup :model-value="teamShow" width="90%" height="70%" borderRadius="16rpx" >
-			<Team v-model="teamShow" :modeMapTree="modeMapTree" :channel="currentTab" :useUserStore="userStore" @confirm-select="handleShowSelector" @confirm-share="handleShowShare" ></Team>
+		<TnPopup :model-value="teamShow" width="90%" height="70%" borderRadius="16rpx">
+			<Team v-model="teamShow" :modeMapTree="modeMapTree" :channel="currentTab" :useUserStore="userStore"
+				@confirm-select="handleShowSelector" @confirm-share="handleShowShare"
+				@confirm-recharge="rechargeShowHandle"></Team>
 		</TnPopup>
-		<TnPopup :model-value="dungeonShow" width="90%" height="70%" borderRadius="16rpx" >
-			<dungeonSelect   v-if="childReady" v-model="dungeonShow" defaultDungeonCode="ozma_assault"
-					defaultMapCode="terache"
-					:defaultRoleCode="defaultRoleCode"     :modeMapTree="modeMapTree" :channel="currentTab" :useUserStore="userStore" @confirm-select="handleShowSelector" @confirm-share="handleShowShare" ></dungeonSelect>
+		<TnPopup :model-value="dungeonShow" width="90%" :z-index="20078" height="70%" borderRadius="16rpx">
+			<dungeonSelect v-if="childReady" v-model="dungeonShow" defaultDungeonCode="ozma_assault"
+				defaultMapCode="terache" :defaultRoleCode="defaultRoleCode" :modeMapTree="modeMapTree"
+				:channel="currentTab" :useUserStore="userStore" @confirm-select="handleShowSelector"
+				@confirm-share="handleShowShare" @confirm-recharge="rechargeShowHandle"></dungeonSelect>
 		</TnPopup>
-		
+		<view v-if="rechargeShow" style="z-index: 1000001;">
+			<Recharge v-model="rechargeShow" :orderInfo="orderInfo"></Recharge>
+		</view>
+
 		<!-- 进行中的组队 -->
-		<view class="progress-layout" v-if="showContinue">
+		<view class="progress-layout" :style="{ bottom: totalOffset + 'rpx' }" v-if="showContinue">
 			<view class="progress-wrap">
 				<view class="lable">
 					你存在进行中的组队
@@ -61,17 +67,22 @@
 				客服
 			</view> -->
 			<view class="refresh" @tap="refresh()"></view>
+
 			<view class="top-tabs">
-	
-				
+
+
 				<view class="tab" :class="{ active: currentTab === item.value }" @tap="selectTab(item.value)"
-					v-for="(item, index) in tabs" :key="item.value" >
+					v-for="(item, index) in tabs" :key="item.value">
 					<image class="tab-icon" :src="item.icon" mode="aspectFill" />
 					{{ item.label }}
 				</view>
-				
+
 			</view>
+			<view class="notice-icon" v-if="hasComplaintActive" @tap="linkTo('/pages/user/complaint-record')"></view>
 		</view>
+
+
+		
 
 		<view class="team-layout" id="team">
 			<view class="create-join-btn" @click="teamShow = true">
@@ -92,8 +103,6 @@
 				</view>
 
 				<view class="team-cards">
-
-
 					<view class="team-btn orange" @tap="handleRoleCode('seller')">
 						<image class="buy-icon" src="https://dnf.hanyunkeji.cn/static/06.png" mode="aspectFit"></image>
 						<text class="team-btn-title">卖家</text>
@@ -104,7 +113,8 @@
 					</view>
 
 					<view class="team-btn" @click="show =true">
-						<image class="buy-icon primary" src="https://dnf.hanyunkeji.cn/static/home/03.png" mode="aspectFit"></image>
+						<image class="buy-icon primary" src="https://dnf.hanyunkeji.cn/static/home/03.png"
+							mode="aspectFit"></image>
 						<text class="team-btn-title">角色</text>
 					</view>
 
@@ -115,30 +125,35 @@
 		<view class="app" @tap="handleContent(1)">
 			<view class="gz">了解平台规则-上车更容易</view>
 		</view>
-
-		<!-- <tn-button @click="show = true">打开弹窗</tn-button> -->
-
 		<!-- 主体左右结构 -->
+		
+				
+				<!-- </template> -->
 		<view class="main-layout">
+			
 			<!-- 左侧侧边栏（结合优化） -->
+	
 			<view class="left-sidebar">
 				<view class="left-layout">
 					<view class="rule-btn">游戏分类</view>
 					<view class="left-category">
 						<!-- 可滚动副本分类 -->
 						<scroll-view scroll-y class="left-scroll">
-							<view v-for="(mode, index) in modeMapTree" :key="mode.id" 
+							<view v-for="(mode, index) in modeMapTree" :key="mode.id"
 								:class="['nav-item', selectedModeIndex === index ? 'active' : '']"
-								:style="{ backgroundImage: `url(${mode.image})` }"
-
-								@tap="onSelectMode(index)">
+								:style="{ backgroundImage: `url(${mode.image})` }" @tap="onSelectMode(index)">
 								<view class="game-title">
 									{{ mode.title }}
 								</view>
-								<view  :class="['mask', selectedModeIndex === index ? 'mask-hidden' : '']"></view>
+								<view :class="['mask', selectedModeIndex === index ? 'mask-hidden' : '']"></view>
 							</view>
 						</scroll-view>
 					</view>
+				</view>
+
+				<view class="deposit" v-if="depositActive" @tap="onDeposit">
+					<image class="deposit-icon" src="https://dnf.hanyunkeji.cn/static/home/deposit.png"
+						mode="aspectFit"></image>
 				</view>
 
 				<!-- <view class="banner-box">
@@ -150,31 +165,45 @@
 					<view class="kefu-tag">客服</view>
 				</view> -->
 			</view>
+	
 
 			<!-- 右侧列表内容（示例） -->
 			<view class="right-content">
-
-				
+				<!-- <z-paging ref="paging" v-if="showPaging"   v-model="roomList" @query="getRoomList"> -->
 				<view class="card-layout">
-					<view class="right-tabs-wrapper">
-						<view class="right-tabs">
+				
+				<!-- <template #top> -->
 					
+				
+					<view class="right-tabs-wrapper">
+						<view class="right-tabs" >
+
 							<view v-for="(map, idx) in currentMode?.maps || []" :key="map.id"
-								:class="['right-tab', selectedMapIndex === idx ? 'active' : '']" @tap="onSelectMap(idx)">
-								<image class="right-tab-icon" src="https://dnf.hanyunkeji.cn/static/avatar.png" mode="aspectFit" />
+								:class="['right-tab', selectedMapIndex === idx ? 'active' : '']"
+								@tap="onSelectMap(idx)">
+								<image class="right-tab-icon" :src="map.image"
+									mode="aspectFit" />
 								<text class="right-tab-text">{{ map.title }}</text>
 								<view class="right-tab-underline" v-if="selectedMapIndex === idx"></view>
 							</view>
 						</view>
 					</view>
 					
-					<!-- <scroll-view scroll-y style="height: 100vh;"> -->
+					
+					
+					
+					
+					
+					<!-- </template> -->
+					<!-- <view @tap="handleContent(5)" class="leilong-btn" v-else>
+						雷龙跨区组队教程
+					</view> -->
 					<view :style="scrollViewStyle" class="room-list">
-						<z-paging ref="paging" :fixed="false"  v-model="roomList" @query="getRoomList">
-							<view class="card" v-for="room in roomList" :key="room.id" @click="linkTo(`/pages/room/room?room_id=${room.id}`)">
-								<!-- <view class="card-tag" v-if="item == 3">
-									<text v-if="item == 3">等待中</text>
-								</view> -->
+		
+						<z-paging ref="paging" v-if="showPaging" :fixed="false" v-model="roomList" @query="getRoomList">
+							<view class="card" v-for="room in roomList" :key="room.id"
+								@click="linkTo(`/pages/room/room?room_id=${room.id}`)">
+								
 								<view class="corner-tag" :class="room.status" v-if="room.status == 'waiting'">
 									<text class="corner-text">等待中</text>
 								</view>
@@ -183,23 +212,33 @@
 								</view>
 								<view class="card-content">
 									<view class="card-avatar">
-										<image class="user-avatar" :src="room.creator_hero.hero_avatar" />
+										<image class="user-avatar" v-if="room.map_code != 'terache'"  :src="room.creator_hero.hero_avatar" />
+										<image class="user-avatar"  v-if="room.map_code == 'terache'" src="https://dnf.hanyunkeji.cn/static/tl.jpg" />
 									</view>
 									<view class="card-info">
 										<view class="card-top">
-											<view class="nickname">{{room.creator_hero.resist_power|| ''}}
-												{{room.creator_hero.hero_name || ''}}</view>
+
+											<view class="nickname" v-if="room.map_code == 'terache'">
+												{{room.tera_own || ''}}泰拉+
+											</view>
+											<view class="nickname" v-else>{{room.creator_hero.resist_power|| ''}}
+												{{room.creator_hero.hero_name || ''}}
+											</view>
 										</view>
+
 										<view class="card-time">
-											<image class="time-img" src="https://dnf.hanyunkeji.cn/static/time.png" mode="aspectFill"></image>
+											<image class="time-img" src="https://dnf.hanyunkeji.cn/static/time.png"
+												mode="aspectFill"></image>
 											{{room.created_text}}
 										</view>
 									</view>
 									<view class="card-status" v-if="room.status == 'completed'">
-										<image class="success-img" src="https://dnf.hanyunkeji.cn/static/success_3.png" mode="aspectFill"></image>
+										<image class="success-img" src="https://dnf.hanyunkeji.cn/static/success_3.png"
+											mode="aspectFill"></image>
 									</view>
 									<view class="card-status" v-if="room.status == 'disbanded'">
-										<image class="success-img" src="https://dnf.hanyunkeji.cn/static/room/200.png" mode="aspectFill"></image>
+										<image class="success-img" src="https://dnf.hanyunkeji.cn/static/room/200.png"
+											mode="aspectFill"></image>
 									</view>
 								</view>
 								<view class="card-bottom">
@@ -210,17 +249,21 @@
 										<image v-for="pos in room.positions" :key="pos.role_id" class="tag-img"
 											:src="getRoleIcon(pos.code, pos.filled)" mode="aspectFill" />
 									</view>
-						
+
 								</view>
 							</view>
-							</z-paging>
-					</view>
-					
-					<!-- </scroll-view> -->
+						</z-paging>
+				
+				
+				
+			
 				</view>
 
 			</view>
+		
 		</view>
+<!-- </z-paging> -->
+	</view>
 	</view>
 </template>
 
@@ -231,7 +274,11 @@
 	import fuiTag from "@/components/fui-tag.vue"
 	import Parse from "@/components/parse.vue"
 	import TnIcon from '@/uni_modules/tuniaoui-vue3/components/icon/src/icon.vue'
-	import { onShareAppMessage, onLoad,onShow } from '@dcloudio/uni-app'
+	import {
+		onShareAppMessage,
+		onLoad,
+		onShow
+	} from '@dcloudio/uni-app'
 	import {
 		ref,
 		computed,
@@ -240,14 +287,16 @@
 	import Roles from '@/components/Roles.vue';
 	import Team from '@/components/team.vue';
 	import dungeonSelect from '@/components/dungeonSelect.vue';
+	import Recharge from "@/components/recharge.vue";
+	import fuiDialog from "@/components/fui-dialog.vue"
 	import {
 		useUserStore
 	} from '@/stores/user'
-	
+
 	import {
 		useSystemStore
 	} from '@/stores/system'
-	
+
 	const system = useSystemStore()
 	// import test from '@/utils/request/index.js'
 	const paging = ref(null)
@@ -264,6 +313,8 @@
 	const defaultRoleCode = ref('');
 	const childReady = ref(false)
 	const showContinue = ref(false)
+	const rechargeShow = ref(false)
+	const orderInfo = ref({})
 
 	const modeMapTree = ref([])
 	const selectedModeIndex = ref(0)
@@ -272,70 +323,203 @@
 	const currentMode = computed(() => modeMapTree.value[selectedModeIndex.value] || {})
 	const currentMap = computed(() => currentMode.value.maps?.[selectedMapIndex.value] || {})
 	const currentRoles = computed(() => currentMap.value.roles || [])
-	
+
 	const shareShow = ref(false)
 	const dungeonShow = ref(false)
+
+	const dialogShow = ref(false);
+	const onConfirm = ref(null) // 动态绑定的回调函数
+
+	const title = ref(null)
+	const content = ref(null)
+	const confirmText = ref(null)
+	const totalOffset = ref(null)
 	
-	const handleContent = (id)=>{
+	const showPaging = ref(false)
+	
+	
+	const scrollTop = ref();
+	
+	
+	// const loadingStatus = ref(); //'more' | 'loading' | 'no-more'
+	// const loadHistory = (e) => {
+	// 	if (loadingStatus.value && loadingStatus.value !== 'more') return
+	// 	loadingStatus.value = 'loading';
+	// 	setTimeout(() => {
+	// 		getRoomList()
+	// 		loadingStatus.value = 'more';
+	// 	}, 1000)
+	// }
+	
+	 const calculateBottomOffset =  ()=> {
+	      const  systemInfo = uni.getSystemInfoSync();
+	      const { platform, screenHeight, windowHeight, safeAreaInsets } = systemInfo;
+	
+	      // 1. 计算 TabBar 高度
+	      let tabBarHeight = 0; // H5 默认
+	      // #ifdef MP-WEIXIN
+	      tabBarHeight = 0; // 微信小程序
+	      // #endif
+	      // #ifdef APP-PLUS
+	      tabBarHeight = screenHeight - windowHeight; // App 端动态计算
+	      // #endif
+		  
+		  // screenHeight
+		  // windowHeight
+	
+	      // 2. 计算安全距离（兼容 iOS & Android）
+	      let safeBottom = 0;
+	      if (safeAreaInsets?.bottom !== undefined) {
+	        // iOS & 部分支持 safeAreaInsets 的 Android
+	        safeBottom = safeAreaInsets.bottom;
+	      } else if (platform === 'android') {
+	        // 部分 Android 设备用差值计算
+	        const diff = screenHeight - windowHeight;
+	        safeBottom = diff > tabBarHeight ? diff - tabBarHeight : 0;
+	      }
+		  
+		   const diff = screenHeight - windowHeight;
+			
+			
+			
+			
+			totalOffset.value  = 20
+	      // 3. 最终偏移量
+	       // totalOffset.value = (diff - 10) * 2;
+		   // console.log(totalOffset.value);
+	    }
+
+	const onClick = (e) => {
+		console.log('点击事件触发了，type：', e)
+		if (e.index === 1 && typeof onConfirm.value === 'function') {
+			console.log("点击确定");
+			onConfirm.value() // 只在点击确认按钮时执行
+		}
+		dialogShow.value = false
+	}
+
+	const handleContent = (id) => {
 		contentId.value = id;
 		contentShow.value = true;
 	}
-	
-	const handleRoleCode = (val) =>{
+
+	const handleRoleCode = (val) => {
 		defaultRoleCode.value = val;
 		// dungeonShow.value  = true;
-		 setTimeout(() => {
-			 dungeonShow.value  = true;
-		    childReady.value = true
-		  }, 30) // 延迟渲染确保
+		setTimeout(() => {
+			dungeonShow.value = true;
+			childReady.value = true
+		}, 30) // 延迟渲染确保
 	}
-	
+
 	// 页面重新显示（切换回来时触发）
 	onShow(() => {
-	  getActiveRoom()
-	  paging.value.reload();
+		getActiveRoom()
+		getActiveDeposit()
+		getHasComplaint()
+		setTimeout(() => {
+			paging.value.reload();
+		}, 30) // 延迟渲染确保
+
 	})
 	
-	
-	const tabs = [
-	  { label: '微信区', value: 'wechat', icon: 'https://dnf.hanyunkeji.cn/static/home/wechat.png' },
-	  { label: 'QQ区', value: 'QQ', icon: 'https://dnf.hanyunkeji.cn/static/home/qq.png' }
+	onLoad(()=>{
+		
+		calculateBottomOffset()
+		getModeMapTree()
+		getActiveRoom()
+		getHasComplaint()
+		getActiveDeposit()
+		const sys = uni.getSystemInfoSync()
+		console.log(sys);
+		let padding = 0;
+		windowHeight.value = sys.windowHeight;
+		system.fetchConfig()
+		if (!userStore.userInfo?.default_user_hero_id) {
+			// 弹窗提示去设置角色
+			console.log("没有设置打团角色");
+		}
+		// 小程序
+		// #ifdef MP
+		const menu = uni.getMenuButtonBoundingClientRect()
+		const btnHeight = menu.bottom - menu.top
+		const verticalPadding = (menu.top - sys.statusBarHeight) * 2;
+		topHeight.value = sys.statusBarHeight;
+		padding = btnHeight + verticalPadding
+		// #endif
+		
+		// App
+		// #ifdef APP-PLUS
+		// padding = sys.statusBarHeight + 44 // App 默认不带胶囊，估一个安全值
+		padding = sys.statusBarHeight + 0 // App 默认不带胶囊，估一个安全值
+		// #endif
+		// H5
+		// #ifdef H5
+		padding = 0 // 默认导航栏高度（自定义的导航栏）
+		// #endif
+		navBarHeight.value = padding
+		
+		setTimeout(()=>{
+			showPaging.value = true
+		},200)
+	})
+	const tabs = [{
+			label: '微信区',
+			value: 'wechat',
+			icon: 'https://dnf.hanyunkeji.cn/static/home/wechat.png'
+		},
+		{
+			label: 'QQ区',
+			value: 'QQ',
+			icon: 'https://dnf.hanyunkeji.cn/static/home/qq.png'
+		}
 	]
 	const currentTab = ref('wechat')
-	
-	const selectTab =  (val)=>  {
-	  currentTab.value = val;
-	  paging.value.reload();
+	const modeMapCode = ref('')
+	const selectTab = (val) => {
+		currentTab.value = val;
+		paging.value.reload();
 	}
-	
+
 	onLoad((params) => {
-		if(params.share_uid){
-			uni.setStorageSync('share_uid',params.share_uid)
+		if (params.share_uid) {
+			uni.setStorageSync('share_uid', params.share_uid)
 			console.log("缓存分享uid" + params.share_uid);
 		}
 	})
-
-
-	const handleShowSelector = ()=>{
+	const handleShowSelector = () => {
 		console.log('父组件收到 show-selector 事件');
-		show.value  = true;
+		show.value = true;
 		// teamShow.value = true;
 	}
-	
-	const shareShowHandle = ()=>{
+
+	const shareShowHandle = () => {
 		shareShow.value = false;
-		handleActiveRoom()
+		console.log(`房间id${shareRoomInfo.value.room_id}`);
+		uni.navigateTo({
+			url: `/pages/room/room?room_id=${shareRoomInfo.value.room_id}`
+		})
+		getActiveRoom()
+		// handleActiveRoom()
 	}
-	
-	const handleShowShare = (val) =>{
-		console.log('父组件收到 show-share 事件'+ val);
-		shareRoomInfo.value = val
-		shareShow.value = true;
+	const rechargeShowHandle = (val) => {
+		console.log("接收rechargeShowHandle");
+		rechargeShow.value = true;
+		orderInfo.value = val
+	}
+	const handleShowShare = (val, type = 'create') => {
+		console.log('父组件收到 show-share 事件' + val);
+		if (type == 'create') {
+			shareRoomInfo.value = val;
+			shareShow.value = true;
+		}
 		paging.value.reload();
 		getActiveRoom()
 	}
+
 	function onSelectMode(index) {
 		console.log(selectedModeIndex.value);
+		// modeMapCode.value =
 		selectedModeIndex.value = index
 		selectedMapIndex.value = 0 // 切换模式时默认选第一个地图
 		paging.value.reload();
@@ -346,7 +530,6 @@
 		console.log(index);
 		paging.value.reload();
 	}
-
 	const getModeMapTree = async () => {
 		const res = await uni.$http.get('/dungeon/modeMapTree')
 		console.log('用户信息:', res)
@@ -356,7 +539,7 @@
 			paging.value.reload();
 		}
 	}
-	
+
 	const activeRoomId = ref(null)
 	const getActiveRoom = async () => {
 		const res = await uni.$http.get('/room/getActiveRoom')
@@ -364,24 +547,63 @@
 			console.log("zhix ");
 			activeRoomId.value = res.data.room_id;
 			showContinue.value = true;
-		}else{
+		} else {
 			showContinue.value = false;
 		}
 	}
-	
-	const handleActiveRoom  = ()=>{
+	const hasComplaintActive = ref(null)
+	const getHasComplaint = async () => {
+		const res = await uni.$http.get('/room/hasComplaint')
+		if (res.code === 1 && res.data.has) {
+			hasComplaintActive.value = true;
+		} else {
+			hasComplaintActive.value = false;
+		}
+	}
+
+	const depositActive = ref(false);
+	const getActiveDeposit = async () => {
+		const res = await uni.$http.get('/room/getActiveDeposit')
+		if (res.code === 1 && res.data.has_deposit) {
+			depositActive.value = true;
+		} else {
+			depositActive.value = false;
+		}
+	}
+
+	const onDeposit = () => {
+		title.value = "提取泰拉车卖家押金"
+		content.value = "资金原路退还"
+		confirmText.value = "确认提取"
+		dialogShow.value = true
+		onConfirm.value = doDeposit
+	}
+
+	const doDeposit = async () => {
+		const res = await uni.$http.get('/dungeon/doDeposit')
+		if (res.code === 1) {
+			depositActive.value = false;
+			uni.showToast({
+				title: res.msg,
+				icon: 'none'
+			})
+		}
+	}
+
+	const handleActiveRoom = () => {
 		linkTo(`/pages/room/room?room_id=${activeRoomId.value}`)
 	}
-	
-	const refresh = ()=>{
+
+
+
+	const refresh = () => {
 		console.log("1111");
 		paging.value.reload();
 	}
-	
-	const onShare = () =>{
+	const onShare = () => {
 		console.log("分享房间");
 		uni.navigateTo({
-			url:`/pages/room/room?room_id=${shareRoomInfo.value.room_id}`
+			url: `/pages/room/room?room_id=${shareRoomInfo.value.room_id}`
 		})
 		// if (process.env.UNI_PLATFORM === 'h5') {
 		//   // H5平台逻辑
@@ -394,72 +616,23 @@
 		// }
 
 	}
-	
+
 	onShareAppMessage(() => {
-	  return {
-	    title: `【8868打团|${shareRoomInfo.value.channel}】快来组队吧：`,
-	    path: `/pages/room/room?id=${shareRoomInfo.value.room_id}&share_uid=${userStore.userInfo.id}`,
-	    imageUrl: shareRoomInfo.value.mode_image
-	  }
-	})
-	
-	
-	
-
-
-	// 在合适的时机调用
-	onMounted(() => {
-		getModeMapTree()
-		getActiveRoom()
-		const sys = uni.getSystemInfoSync()
-		let padding = 0;
-		windowHeight.value = sys.windowHeight;
-		
-		
-		system.fetchConfig()
-		
-
-		// getRoomList();
-
-
-		if (!userStore.userInfo?.default_user_hero_id) {
-			// 弹窗提示去设置角色
-			console.log("没有设置打团角色");
+		return {
+			title: `【8868打团|${shareRoomInfo.value.channel}】快来组队吧：`,
+			path: `/pages/room/room?id=${shareRoomInfo.value.room_id}&share_uid=${userStore.userInfo.id}`,
+			imageUrl: shareRoomInfo.value.mode_image
 		}
-
-
-		// 小程序
-		// #ifdef MP
-		const menu = uni.getMenuButtonBoundingClientRect()
-		const btnHeight = menu.bottom - menu.top
-		const verticalPadding = (menu.top - sys.statusBarHeight) * 2;
-		topHeight.value = sys.statusBarHeight;
-		padding = btnHeight + verticalPadding
-		// #endif
-
-		// App
-		// #ifdef APP-PLUS
-		// padding = sys.statusBarHeight + 44 // App 默认不带胶囊，估一个安全值
-		padding = sys.statusBarHeight + 0 // App 默认不带胶囊，估一个安全值
-		// #endif
-
-		// H5
-		// #ifdef H5
-		padding = 0 // 默认导航栏高度（自定义的导航栏）
-		// #endif
-
-		navBarHeight.value = padding
 	})
+	const getRoomList = async (pageNo, pageSize) => {
 
-	const getRoomList =  async (pageNo, pageSize) => {
-		
-		if(!modeMapTree.value[selectedModeIndex.value]){
+		if (!modeMapTree.value[selectedModeIndex.value]) {
 			console.log("不存在不发起请求");
 			return false;
 		}
-		
+
 		console.log(modeMapTree.value[selectedModeIndex.value].code);
-		const res =  await uni.$http.post('/dungeon/list', {
+		const res = await uni.$http.post('/dungeon/list', {
 			channel: currentTab.value,
 			mode_code: modeMapTree.value[selectedModeIndex.value].code,
 			map_code: currentMap.value.code,
@@ -468,13 +641,6 @@
 		})
 		if (res.code === 1) {
 			paging.value.complete(res.data.list);
-			// roomList.value = res.data
-			
-		} else {
-			uni.showToast({
-				title: res.msg,
-				icon: 'none'
-			})
 		}
 	}
 
@@ -503,25 +669,64 @@
 			deck: 'deck',
 			team: 'team',
 			baoche: 'baoche',
+			leech:'support',
 			lock: 'lock'
 		}
 		const key = map[code] || 'unknown'
+		
+		if(code == 'lock'){
+			return `https://dnf.hanyunkeji.cn/static/icons/lock_active.svg`
+		}
+		
+		if(code == 'seller'){
+			return `https://dnf.hanyunkeji.cn/static/icons/seller_active.svg`
+		}
+		
 		return `https://dnf.hanyunkeji.cn/static/icons/${key}_${filled ? 'active' : 'empty'}.png`
 	}
-	
+
 	// 动态 style 样式字符串
 	const scrollViewStyle = computed(() => {
-		const contentHeight =  windowHeight.value - statusBarHeight.value - 273;
-	  return `height: ${contentHeight}px; overflow: auto;`
+
+		let height = uni.getSystemInfoSync().statusBarHeight
+
+		
+		// let contentHeights = contentHeight*2;
+		return  `height:calc(100vh -  ${height}px - 600rpx)`;
+		//return `height: ${contentHeight}px; overflow: auto;`
 	})
 	// 273
-	
-	// console.log(`计算${scrollViewStyle}`);
-
-	
 </script>
 
 <style scoped lang="scss">
+	
+	
+	.list-wrap {
+		height: 0;
+		flex: 1;
+	
+		.scroll-list {
+			height: 100%;
+			transform: scaleY(-1);
+		}
+	
+		// .message-item-wrap {
+		// 	min-height: 100%;
+		// 	transform: scaleY(-1);
+		// 	display: flex;
+		// 	flex-direction: column;
+		// 	justify-content: flex-start;
+		// }
+	
+		.loading-wrap {
+			transform: scaleY(-1);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 10rpx;
+		}
+	}
+	
 	.container {
 		padding: 0;
 		background: #f0f2f5;
@@ -530,6 +735,7 @@
 		flex-direction: column;
 		position: fixed;
 		width: 100%;
+		// position: relative;
 	}
 
 	.real-status-bar {
@@ -542,6 +748,10 @@
 		align-items: center;
 		background-color: #fff;
 		padding: 16rpx 20rpx;
+		
+		
+		height: 120rpx;
+		// height: 80rpx;
 	}
 
 	.top-kefu {
@@ -556,7 +766,21 @@
 		justify-content: flex-end;
 		padding-right: 10rpx;
 	}
-	.refresh{
+
+	.notice-icon {
+		width: 58rpx;
+		height: 58rpx;
+		color: #fff;
+		background-image: url('https://dnf.hanyunkeji.cn/static/home/notice.png');
+		background-size: 100% 100%;
+		font-size: 25rpx;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		margin: 20rpx;
+	}
+
+	.refresh {
 		width: 120rpx;
 		height: 120rpx;
 		background-image: url('https://dnf.hanyunkeji.cn/static/home/refresh.png');
@@ -713,8 +937,8 @@
 		color: #888;
 		font-size: 24rpx;
 	}
-	
-	.game-title{
+
+	.game-title {
 		position: absolute;
 		right: 0rpx;
 		bottom: 1rpx;
@@ -724,19 +948,21 @@
 		color: #fff;
 		border-radius: 10rpx 0rpx 10rpx 0rpx;
 	}
-	
+
 	.mask {
-	  position: absolute;
-	  top: 0;
-	  left: 0;
-	  width: 100%;
-	  height: 100%;
-	  background-color: rgba(255, 255, 255, 0.4); /* 白色半透明 */
-	  pointer-events: none; /* 不挡点击 */
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(255, 255, 255, 0.4);
+		/* 白色半透明 */
+		pointer-events: none;
+		/* 不挡点击 */
 	}
-	
+
 	.mask-hidden {
-	  display: none;
+		display: none;
 	}
 
 
@@ -809,8 +1035,8 @@
 		transform: rotate(45deg);
 		// box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
 	}
-	
-	.room-list{
+
+	.room-list {
 		margin-top: 20rpx;
 	}
 
@@ -892,6 +1118,13 @@
 		margin-top: 6rpx;
 	}
 
+	.deposit {}
+
+	.deposit-icon {
+		width: 100rpx;
+		height: 100rpx;
+	}
+
 	.shadow {
 		box-shadow: 0 6rpx 12rpx rgba(0, 0, 0, 0.08);
 		margin: 20rpx;
@@ -920,17 +1153,20 @@
 		position: relative;
 		box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
 	}
-	.waiting{
+
+	.waiting {
 		background: #EF6A22;
 	}
-	
-	.waiting{
+
+	.waiting {
 		background: #EF6A22;
 	}
-	.in_progress{
+
+	.in_progress {
 		background: #2166F1;
 	}
-	.disbanded{
+
+	.disbanded {
 		background: #ffa726;
 	}
 
@@ -1056,7 +1292,21 @@
 		background-color: #fff;
 		border-radius: 10rpx;
 		padding: 20rpx;
+		height: 80rpx;
 		/* margin-bottom: 20rpx; */
+	}
+	.leilong-btn{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 80rpx;
+		border-radius: 10rpx;
+		background: #fff;
+		color: #3366ff;
+		font-weight: 500;
+		border: 1rpx solid #3366ff;
+		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1); /* 阴影效果 */
+		margin-bottom: 24rpx;
 	}
 
 	.right-tabs {
@@ -1106,6 +1356,7 @@
 		align-items: center;
 		background: #fff;
 		padding: 20rpx 16rpx;
+		height: 225rpx;
 	}
 
 	/* 右侧 浅蓝面板 */
@@ -1191,51 +1442,52 @@
 
 	.app {
 		padding: 16rpx 16rpx 0rpx 16rpx;
+		height: 100rpx;
 	}
-	
-	.progress-layout{
+
+	.progress-layout {
 		width: 100%;
 		position: absolute;
-		bottom: 150rpx;
+		// bottom: 102rpx;
 		padding: 30rpx;
 		z-index: 1000;
 	}
-	
-	.progress-wrap{
+
+	.progress-wrap {
 		// margin: 0rpx 30rpx;	
 		padding: 0rpx 30rpx;
 		height: 100rpx;
 		border-radius: 20rpx;
 		display: flex;
-		justify-content: space-between;	
+		justify-content: space-between;
 		align-items: center;
 		background: rgba(0, 0, 0, 0.7);
 		color: #fff;
 	}
-	
-	.link-btn{
+
+	.link-btn {
 		padding: 10rpx 25rpx;
 		background: #1677ff;
 		border-radius: 30rpx;
 		color: #fff;
 		font-size: 25rpx;
-		
+
 	}
-	
-	
+
+
 	//创建房间弹窗
 	.share-card-box {
 		background-color: #fff;
 		border-radius: 10rpx;
 	}
-	
+
 	.share-remark {
 		margin-top: 16rpx;
 		font-size: 28rpx;
 		color: #808080;
 	}
 
-	
+
 	.share-header {
 		text-align: center;
 		font-size: 30rpx;
@@ -1244,23 +1496,25 @@
 		font-weight: 500;
 		border-bottom: 1rpx solid #eee;
 	}
-	
+
 	.fui-icon__close {
 		position: absolute;
 		top: 24rpx;
 		right: 54rpx;
-	
+
 	}
-	.share-body{
+
+	.share-body {
 		padding: 25rpx 0rpx;
 		text-align: center;
 		border-bottom: 1rpx solid #eee;
 	}
-	.ok-icon{
+
+	.ok-icon {
 		width: 100rpx;
 		height: 100rpx;
 	}
-	
+
 	.share-btn {
 		background: #fff;
 		border: none !important;
@@ -1272,8 +1526,8 @@
 		border-radius: 10rpx;
 		text-align: center;
 	}
-	.share-btn::after{
+
+	.share-btn::after {
 		border: none !important;
 	}
-	
 </style>

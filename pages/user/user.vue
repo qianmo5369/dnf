@@ -1,5 +1,7 @@
 <template>
 	<view class="profile-page">
+		<fui-dialog :show="dialogShow" :content="system.config.email" title="请发送邮箱至" confirmText="复制邮箱" maskClosable @click="onClick"
+			></fui-dialog>
 		<!-- 顶部信息区域 -->
 		<view class="profile-header">
 			<template v-if="userStore.isLoggedIn">
@@ -12,6 +14,7 @@
 						<!-- <image class="copy-icon" src="https://dnf.hanyunkeji.cn/static/icon-copy.png" /> -->
 					</view>
 				</view>
+				<TnIcon name="set" size="45" @tap="linkTo('/pages/user/setting')" />
 			</template>
 
 			<template v-else>
@@ -40,7 +43,7 @@
 
 		<!-- 功能菜单 -->
 		<view class="menu-list">
-			<view class="menu-item" v-for="(item, index) in menus" :key="index" @click="linkTo(item.path)">
+			<view class="menu-item" v-for="(item, index) in menus" :key="index" @click="linkTo(item.path,item.type)">
 				<image :src="item.icon" class="menu-icon" />
 				<text class="menu-text">{{ item.text }}</text>
 				<image class="arrow-icon" src="https://dnf.hanyunkeji.cn/static/user/09.png" />
@@ -53,9 +56,9 @@
       <view class="kefu-tag">客服</view>
     </view> -->
 
-		<view class="top-kefu">
+		<button class="top-kefu" open-type="contact">
 			客服
-		</view>
+		</button>
 
 		<!-- 留空占位的群 banner -->
 		<!-- <view class="group-banner">
@@ -72,9 +75,16 @@
 	} from 'vue'
 	import TnAvatar from '@/uni_modules/tuniaoui-vue3/components/avatar/src/avatar.vue'
 	import TnIcon from '@/uni_modules/tuniaoui-vue3/components/icon/src/icon.vue'
+	import fuiDialog from "@/components/fui-dialog.vue"
 	import {
 		useUserStore
 	} from '@/stores/user'
+	import {
+		useSystemStore
+	} from '@/stores/system'
+	const dialogShow = ref(false)
+	const system = useSystemStore()
+	// console.log(system.config.email);
 	import {
 		onShow,
 		onLoad
@@ -101,7 +111,8 @@
 		{
 			text: '邀请好友',
 			icon: 'https://dnf.hanyunkeji.cn/static/user/05.png',
-			type: "url"
+			path:"/pages/red/red",
+			type: "urlTab"
 		},
 		{
 			text: '建议反馈',
@@ -112,10 +123,13 @@
 		{
 			text: '商务合作',
 			icon: 'https://dnf.hanyunkeji.cn/static/user/03.png',
-			type: "Popup"
+			type: "popup"
 		},
 	]
-
+	
+	onShow(()=>{
+		getUserInfo()
+	})
 
 
 	const userStore = useUserStore()
@@ -127,10 +141,33 @@
 	const getUserInfo = async () => {
 		await userStore.fetchUserInfo()
 	}
-	const linkTo = (path) => {
-		uni.navigateTo({
-			url: path
-		})
+	const linkTo = (path,type = 'url') => {
+		if(type ==  'url'){
+			uni.navigateTo({
+				url: path
+			})
+		}
+		if(type ==  'popup'){
+			dialogShow.value =  true
+			
+		}
+		
+		if(type == 'urlTab'){
+			uni.switchTab({
+				url:path
+			})
+		}
+		
+		
+		
+	}
+	const onClick = (e) => {
+		console.log('点击事件触发了，type：', e)
+		if (e.index === 1) {
+			console.log("点击确定");
+			copy(system.config.email) // 只在点击确认按钮时执行
+		}
+		dialogShow.value = false
 	}
 	
 	const copy = (val) => {
@@ -171,8 +208,14 @@
 		align-items: center;
 		padding: 200rpx 40rpx 20rpx;
 		background: linear-gradient(to bottom, #66ccff, #ffffff);
+		position: relative;
 		/* background: linear-gradient(177.16deg, #fff 0%, #d9ecff 33.13%, #fff 69.08%, #fff 100%); */
 		/* background-image: url('https://resource.tuniaokj.com/images/cool_bg_image/icon_bg.png'); */
+	}
+	.setting{
+		position: absolute;
+		right: 10;
+		top: 10;
 	}
 
 	.avatar {
@@ -206,6 +249,8 @@
 		width: 28rpx;
 		height: 28rpx;
 	}
+	
+	
 
 	.balance-card {
 		background: #2e2b27;
@@ -321,5 +366,12 @@
 		align-items: center;
 		justify-content: flex-end;
 		padding-right: 10rpx;
+		background-color: transparent;
 	}
+
+	.top-kefu::after{
+		
+		border: none !important;
+		height: 100rpx !important;
+	}	
 </style>

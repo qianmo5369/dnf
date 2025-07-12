@@ -29,7 +29,13 @@
 				</view>
 			</view>
 		</TnPopup>
-		
+		<z-paging
+		  ref="paging"
+		  v-model="coinList"
+		  @query="getCoinLogs"
+			
+		>
+		<template #top>
 		<!-- 顶部余额卡片 -->
 		<view class="balance-card assist-card">
 			<view class="assist-left">
@@ -72,15 +78,12 @@
 			  {{ tab.label }}
 			</view>
 		</view>
+		
+		</template>
 
 		<!-- 明细列表 -->
 		<view class="record-list">
-			<z-paging
-			  ref="paging"
-			  v-model="coinList"
-			  @query="getCoinLogs"
-				:fixed="false"
-			>
+			
 			<view class="record-item" v-for="(item, index) in coinList" :key="index">
 				<template v-if="activeTab == 'coin_log'">
 					<view class="left">
@@ -124,8 +127,9 @@
 					<view class="timestamp">2025-05-27 14:03</view>
 				</view>
 			</view> -->
-			</z-paging>
+			
 		</view>
+		</z-paging>
 	</view>
 </template>
 <script setup>
@@ -353,7 +357,7 @@
 	.record-list {
 		padding: 0 24rpx;
 		margin-top: 20rpx;
-		height: 60vh;
+		// height: 60vh;
 	}
 
 	.record-item {

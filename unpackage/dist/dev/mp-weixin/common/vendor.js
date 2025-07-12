@@ -7439,9 +7439,9 @@ function isConsoleWritable() {
   return isWritable;
 }
 function initRuntimeSocketService() {
-  const hosts = "127.0.0.1,192.168.1.137,26.26.26.1";
+  const hosts = "127.0.0.1,192.168.31.15,26.26.26.1";
   const port = "8090";
-  const id = "mp-weixin_qLybUb";
+  const id = "mp-weixin_Oaritm";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -9004,13 +9004,16 @@ exports.index = index;
 exports.initVueI18n = initVueI18n;
 exports.inject = inject;
 exports.isArray = isArray;
+exports.isFunction = isFunction;
 exports.isObject = isObject$1;
 exports.isPromise = isPromise;
 exports.isRef = isRef;
 exports.isString = isString;
+exports.isSymbol = isSymbol;
 exports.n = n;
 exports.nextTick$1 = nextTick$1;
 exports.o = o;
+exports.onBeforeUnmount = onBeforeUnmount;
 exports.onLoad = onLoad;
 exports.onMounted = onMounted;
 exports.onPageScroll = onPageScroll;
@@ -9020,16 +9023,20 @@ exports.onShareAppMessage = onShareAppMessage;
 exports.onShow = onShow;
 exports.onUnmounted = onUnmounted;
 exports.p = p;
+exports.provide = provide;
 exports.r = r;
+exports.reactive = reactive;
 exports.ref = ref;
 exports.resolveComponent = resolveComponent;
 exports.s = s;
 exports.sr = sr;
 exports.t = t;
 exports.toRef = toRef;
+exports.toRefs = toRefs;
 exports.unref = unref;
 exports.useSlots = useSlots;
 exports.w = w;
 exports.warn = warn;
 exports.watch = watch;
+exports.wx$1 = wx$1;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/vendor.js.map

@@ -53,10 +53,13 @@ const _sfc_main = {
         images: imagesList
       });
       if (res.code === 1) {
-        return common_vendor.index.showToast({
+        common_vendor.index.showToast({
           title: res.msg,
           icon: "none"
         });
+        setTimeout(() => {
+          common_vendor.index.navigateBack();
+        }, 1200);
       }
     };
     return (_ctx, _cache) => {

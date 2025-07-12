@@ -369,3 +369,8 @@
 .header-text1 {
 		margin: 0 15rpx;
 }
+.reply-img{
+		width: 150rpx;
+		height: 100rpx;
+		margin-right: 20rpx;
+}

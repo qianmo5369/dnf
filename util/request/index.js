@@ -8,7 +8,7 @@ const http = new Request({
   baseURL: baseUrl, // 修改为你的地址
   timeout: 10000,
   custom: {
-    auth: true // 自定义字段示例
+    loading: true // 自定义字段示例
   }
 })
 
@@ -19,12 +19,13 @@ http.interceptors.request.use((config) => {
 	    config.header.token = userStore.token
 	  }
   // const token = uni.getStorageSync('token')
-  // if (token && config.custom?.auth) {
-  //   config.header.token = token
-  // }
-  uni.showLoading({
-  	title: '加载中...'
-  })
+  if (config.custom?.loading) {
+	  console.log("显示加载");
+   // uni.showLoading({
+   // 	title: '加载中...'
+   // })
+  }
+  
   return config
 }, (error) => {
   return Promise.reject(error)
@@ -34,7 +35,7 @@ http.interceptors.request.use((config) => {
 http.interceptors.response.use((response) => {
   // 业务成功码
   uni.hideLoading()
-  if (response.data.code === 1 || response.data.code === 200) {
+  if (response.data.code === 1 || response.data.code === 200 || response.data.code === 100) {
     return response.data;
   } else {
     uni.showToast({

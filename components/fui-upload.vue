@@ -3,7 +3,7 @@
 		<view class="fui-upload__item" :style="{width:width+'rpx',height:height+'rpx',borderRadius:radius+'rpx'}"
 			v-for="(item,index) in urls" :key="index">
 			<image class="fui-upload__img" :style="{width:width+'rpx',height:height+'rpx',borderRadius:radius+'rpx'}"
-				:src="item" mode="aspectFill" @tap.stop="previewImage(index)"></image>
+				:src="item" mode="aspectFit" @tap.stop="previewImage(index)"></image>
 			<view class="fui-upload__mask" v-if="status[index]!=='success' && status[index]!=='preupload' ">
 				<fui-icon name="warning-fill" color="#fff" :size="48" v-if="status[index]==='error'"></fui-icon>
 				<text class="fui-reupload__btn" @tap.stop="reUpload(index)" v-if="status[index]==='error'">重新上传</text>
@@ -492,6 +492,9 @@
 		justify-content: center;
 		margin-right: 20rpx;
 		margin-bottom: 20rpx;
+		
+			/* flex: 0 0 50%; */
+		  box-sizing: border-box;
 		/* #ifdef H5 */
 		cursor: pointer;
 		/* #endif */

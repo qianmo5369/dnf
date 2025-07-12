@@ -17,8 +17,8 @@ const _sfc_main = {
     const tabs = [
       { label: "待处理", value: "pending" },
       { label: "处理中", value: "processing" },
-      { label: "撤回申诉", value: "resolved" },
-      { label: "已完成", value: "cancelled" }
+      { label: "撤回申诉", value: "cancelled" },
+      { label: "已和解", value: "resolved" }
     ];
     const activeTab = common_vendor.ref("pending");
     const complaintList = common_vendor.ref([]);
@@ -33,7 +33,7 @@ const _sfc_main = {
         status: activeTab.value
       });
       if (res.code === 1) {
-        common_vendor.index.__f__("log", "at pages/user/complaint-record.vue:87", res.data.list);
+        common_vendor.index.__f__("log", "at pages/user/complaint-record.vue:93", res.data.list);
         paging.value.complete(res.data.list);
       } else {
         paging.value.complete(false);
@@ -64,13 +64,13 @@ const _sfc_main = {
           }, item.status == "pending" ? {} : {}, {
             f: item.status == "processing"
           }, item.status == "processing" ? {} : {}, {
-            g: item.status == "resolved"
-          }, item.status == "resolved" ? {} : {}, {
-            h: item.status == "cancelled"
+            g: item.status == "cancelled"
           }, item.status == "cancelled" ? {} : {}, {
+            h: item.status == "resolved"
+          }, item.status == "resolved" ? {} : {}, {
             i: common_vendor.t(item.room_sn),
-            j: item.is_mine
-          }, item.is_mine ? {} : {}, {
+            j: !item.is_mine
+          }, !item.is_mine ? {} : {}, {
             k: common_vendor.t(item.reason),
             l: common_vendor.t(item.created_at_text),
             m: common_vendor.o(($event) => linkTo(`/pages/complaint/complaint?complaint_id=${item.id}`), index),

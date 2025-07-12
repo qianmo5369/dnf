@@ -120,7 +120,6 @@
 .record-list.data-v-bd3e538d {
   padding: 0 24rpx;
   margin-top: 20rpx;
-  height: 60vh;
 }
 .record-item.data-v-bd3e538d {
   background: #fff;

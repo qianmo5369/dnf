@@ -13,7 +13,7 @@
 		flex-direction: column;
 		background: #fff;
 		border-radius: 24rpx;
-		padding: 60rpx 30rpx;
+		padding: 60rpx 0rpx;
 		/* box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.05); */
 }
 .login-title.data-v-e4e4508d {
@@ -61,6 +61,18 @@
 		padding: 5rpx 0;
 		margin-top: 70rpx;
 		margin-bottom: 12rpx;
+}
+.login-logo.data-v-e4e4508d{
+		text-align: center;
+		margin-top: 300rpx;
+}
+.login-logo-icon.data-v-e4e4508d{
+		width: 300rpx;
+		height: 300rpx;
+}
+.login-btn-wx.data-v-e4e4508d{
+		background: #07ba05;
+		margin-bottom: 30rpx;
 }
 .login-switch.data-v-e4e4508d {
 		display: flex;

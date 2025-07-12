@@ -5,6 +5,7 @@
   "disableScroll": true,
   "usingComponents": {
     "tn-avatar": "../../uni_modules/tuniaoui-vue3/components/avatar/src/avatar",
-    "tn-icon": "../../uni_modules/tuniaoui-vue3/components/icon/src/icon"
+    "tn-icon": "../../uni_modules/tuniaoui-vue3/components/icon/src/icon",
+    "fui-dialog": "../../components/fui-dialog"
   }
 }

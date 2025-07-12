@@ -23,7 +23,11 @@ export const useUserStore = defineStore('user', {
 
     async fetchUserInfo() {
       try {
-        const res = await uni.$http.get('/dungeon/getUserInfo')
+        const res = await uni.$http.get('/user/getUserInfo',{},{
+						custom: {
+							loading: false,
+						}
+					})
         if (res.code === 1) {
           this.setUserInfo(res.data)
           return res

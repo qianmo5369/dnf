@@ -19,7 +19,11 @@ const useUserStore = common_vendor.defineStore("user", {
     },
     async fetchUserInfo() {
       try {
-        const res = await common_vendor.index.$http.get("/dungeon/getUserInfo");
+        const res = await common_vendor.index.$http.get("/user/getUserInfo", {}, {
+          custom: {
+            loading: false
+          }
+        });
         if (res.code === 1) {
           this.setUserInfo(res.data);
           return res;

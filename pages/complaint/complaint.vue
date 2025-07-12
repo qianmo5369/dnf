@@ -65,7 +65,11 @@
 					<view class="reply-card">
 						<view class="reply-header">
 							<TnAvatar size="70rpx" :url="item.hero_avatar" />
-							<text class="name">{{ item.hero_name }}</text>
+							
+							<view class="name">
+								<view >{{ item.hero_name }}</view>
+								<view class="role-subtitle">{{ item.hero_nickname }}</view>
+							</view>
 							<text class="reply-time">{{ item.reply_time }}</text>
 						</view>
 						<view class="reply-content">
@@ -125,6 +129,7 @@
 		onUnmounted
 
 	} from 'vue'
+	import ws from '@/util/ws.js'
 	import {
 		onShow,
 		onLoad
@@ -291,6 +296,12 @@
 
 	onMounted(() => {
 		getComplaintDetail()
+		
+		ws.on('complaintUpdated', (msg) => {
+			
+			buildSteps(msg.data);
+		})
+		
 	})
 </script>
 

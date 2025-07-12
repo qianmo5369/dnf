@@ -1,5 +1,14 @@
 <template>
   <view class="team-record-page">
+	  <z-paging
+	    ref="paging"
+	    v-model="complaintList"
+	    @query="getComplaintList"
+	  :fixed="false"
+	  >
+	  <template #top>
+	  	
+	 
     <!-- 顶部导航 -->
     <view class="tabs">
       <view
@@ -12,16 +21,12 @@
         {{ tab.label }}
       </view>
     </view>
+	 </template>
 
     <!-- 列表内容 -->
 	<!-- <view class="line"></view> -->
     <view class="record-list">
-		<z-paging
-		  ref="paging"
-		  v-model="complaintList"
-		  @query="getComplaintList"
-		:fixed="false"
-		>
+		
      <view class="appeal-item" @tap="linkTo(`/pages/complaint/complaint?complaint_id=${item.id}`)" v-for="(item, index) in complaintList" :key="index">
             <view class="user-info">
               <image class="avatar" :src="item.hero.hero_avatar" mode="aspectFill" />
@@ -32,15 +37,15 @@
               <view class="cancel-btn">
 				  <text v-if="item.status == 'pending'">待处理</text>
 				  <text v-if="item.status  == 'processing'">处理中</text>
-				  <text v-if="item.status == 'resolved'">同意和解</text>
 				  <text v-if="item.status == 'cancelled'">撤回申诉</text>
+				  <text v-if="item.status == 'resolved'">已完成</text>
 			  </view>
             </view>
       
             <view class="info-text">
 				<text class="label">房间信息：</text>
               <text class="room-id">{{ item.room_sn }}</text>
-              <text class="tag" v-if="item.is_mine">被投诉</text>
+              <text class="tag" v-if="!item.is_mine">被投诉</text>
             </view>
             <view class="label">问题描述：
 			<text class="reason">{{ item.reason }}</text>
@@ -52,8 +57,9 @@
             </view>
           </view>
 		  
-		  </z-paging>
+		 
   </view>
+   </z-paging>
   </view>
 </template>
 
@@ -65,8 +71,8 @@ const paging = ref(null)
 const tabs = [
   { label: '待处理', value: 'pending' },
   { label: '处理中', value: 'processing' },
-  {label: '撤回申诉', value:'resolved'},
-  { label: '已完成', value: 'cancelled' },
+  {label: '撤回申诉', value:'cancelled'},
+  { label: '已和解', value: 'resolved' },
 ]
 
 const activeTab = ref('pending')

@@ -171,7 +171,6 @@ const _sfc_main = {
         s: common_vendor.o(getCoinLogs),
         t: common_vendor.o(($event) => coinList.value = $event),
         v: common_vendor.p({
-          fixed: false,
           modelValue: coinList.value
         })
       };

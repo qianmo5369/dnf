@@ -1,1 +1,1 @@
-{"version":3,"file":"form.js","sources":[],"sourcesContent":[],"names":[],"mappings":""}
+{"version":3,"file":"form.js","sources":["uni_modules/tuniaoui-vue3/tokens/form.ts"],"sourcesContent":["import type { InjectionKey } from 'vue'\nimport type { FormContext, FormItemContext } from '../components'\n\nexport const formContextKey: InjectionKey<FormContext> =\n  Symbol('formContextKey')\nexport const formItemContextKey: InjectionKey<FormItemContext> =\n  Symbol('formItemContextKey')\n"],"names":[],"mappings":";AAGa,MAAA,iBACX,OAAO,gBAAgB;AACZ,MAAA,qBACX,OAAO,oBAAoB;;;"}

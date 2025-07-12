@@ -66,7 +66,7 @@ const _sfc_main = {
             rechargeShow.value = false;
           },
           fail: (err) => {
-            common_vendor.index.__f__("log", "at pages/user/balance.vue:153", err);
+            common_vendor.index.__f__("log", "at pages/user/balance.vue:157", err);
             common_vendor.index.showToast({
               title: "未付款",
               icon: "none"
@@ -122,7 +122,6 @@ const _sfc_main = {
         l: common_vendor.o(getFundLogs),
         m: common_vendor.o(($event) => fundList.value = $event),
         n: common_vendor.p({
-          fixed: false,
           modelValue: fundList.value
         })
       };

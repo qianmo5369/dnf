@@ -13,8 +13,14 @@ page.data-v-0f7520f0 {
 		align-items: center;
 		padding: 200rpx 40rpx 20rpx;
 		background: linear-gradient(to bottom, #66ccff, #ffffff);
+		position: relative;
 		/* background: linear-gradient(177.16deg, #fff 0%, #d9ecff 33.13%, #fff 69.08%, #fff 100%); */
 		/* background-image: url('https://resource.tuniaokj.com/images/cool_bg_image/icon_bg.png'); */
+}
+.setting.data-v-0f7520f0{
+		position: absolute;
+		right: 10;
+		top: 10;
 }
 .avatar.data-v-0f7520f0 {
 		width: 100rpx;
@@ -142,4 +148,10 @@ page.data-v-0f7520f0 {
 		align-items: center;
 		justify-content: flex-end;
 		padding-right: 10rpx;
+		background-color: transparent;
 }
+.top-kefu.data-v-0f7520f0::after{
+		
+		border: none !important;
+		height: 100rpx !important;
+}	

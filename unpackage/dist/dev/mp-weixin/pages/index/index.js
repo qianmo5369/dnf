@@ -4,12 +4,13 @@ const uni_modules_zPaging_components_zPaging_js_hooks_useZPaging = require("../.
 const stores_user = require("../../stores/user.js");
 const stores_system = require("../../stores/system.js");
 if (!Array) {
+  const _component_TnModal = common_vendor.resolveComponent("TnModal");
   const _easycom_z_paging2 = common_vendor.resolveComponent("z-paging");
-  _easycom_z_paging2();
+  (_component_TnModal + _easycom_z_paging2)();
 }
 const _easycom_z_paging = () => "../../uni_modules/z-paging/components/z-paging/z-paging.js";
 if (!Math) {
-  (Roles + fuiBottomPopup + TnIcon + TnPopup + Parse + Team + dungeonSelect + _easycom_z_paging)();
+  (Roles + fuiBottomPopup + fuiDialog + TnIcon + TnPopup + Parse + Team + dungeonSelect + Recharge + _easycom_z_paging)();
 }
 const TnPopup = () => "../../uni_modules/tuniaoui-vue3/components/popup/src/popup.js";
 const fuiBottomPopup = () => "../../components/fui-bottom-popup.js";
@@ -18,13 +19,15 @@ const TnIcon = () => "../../uni_modules/tuniaoui-vue3/components/icon/src/icon.j
 const Roles = () => "../../components/Roles.js";
 const Team = () => "../../components/team.js";
 const dungeonSelect = () => "../../components/dungeonSelect.js";
+const Recharge = () => "../../components/recharge.js";
+const fuiDialog = () => "../../components/fui-dialog.js";
 const _sfc_main = {
   __name: "index",
   setup(__props) {
     const system = stores_system.useSystemStore();
     const paging = common_vendor.ref(null);
     uni_modules_zPaging_components_zPaging_js_hooks_useZPaging.useZPaging(paging);
-    const statusBarHeight = common_vendor.ref(0);
+    common_vendor.ref(0);
     const navBarHeight = common_vendor.ref(0);
     const topHeight = common_vendor.ref(0);
     const userStore = stores_user.useUserStore();
@@ -36,6 +39,8 @@ const _sfc_main = {
     const defaultRoleCode = common_vendor.ref("");
     const childReady = common_vendor.ref(false);
     const showContinue = common_vendor.ref(false);
+    const rechargeShow = common_vendor.ref(false);
+    const orderInfo = common_vendor.ref({});
     const modeMapTree = common_vendor.ref([]);
     const selectedModeIndex = common_vendor.ref(0);
     const selectedMapIndex = common_vendor.ref(0);
@@ -47,6 +52,30 @@ const _sfc_main = {
     common_vendor.computed(() => currentMap.value.roles || []);
     const shareShow = common_vendor.ref(false);
     const dungeonShow = common_vendor.ref(false);
+    const dialogShow = common_vendor.ref(false);
+    const onConfirm = common_vendor.ref(null);
+    const title = common_vendor.ref(null);
+    const content = common_vendor.ref(null);
+    const confirmText = common_vendor.ref(null);
+    const totalOffset = common_vendor.ref(null);
+    const showPaging = common_vendor.ref(false);
+    common_vendor.ref();
+    const calculateBottomOffset = () => {
+      const systemInfo = common_vendor.index.getSystemInfoSync();
+      const { platform, screenHeight, windowHeight: windowHeight2, safeAreaInsets } = systemInfo;
+      if ((safeAreaInsets == null ? void 0 : safeAreaInsets.bottom) !== void 0) {
+        safeAreaInsets.bottom;
+      }
+      totalOffset.value = 20;
+    };
+    const onClick = (e) => {
+      common_vendor.index.__f__("log", "at pages/index/index.vue:393", "点击事件触发了，type：", e);
+      if (e.index === 1 && typeof onConfirm.value === "function") {
+        common_vendor.index.__f__("log", "at pages/index/index.vue:395", "点击确定");
+        onConfirm.value();
+      }
+      dialogShow.value = false;
+    };
     const handleContent = (id) => {
       contentId.value = id;
       contentShow.value = true;
@@ -60,13 +89,51 @@ const _sfc_main = {
     };
     common_vendor.onShow(() => {
       getActiveRoom();
-      paging.value.reload();
+      getActiveDeposit();
+      getHasComplaint();
+      setTimeout(() => {
+        paging.value.reload();
+      }, 30);
+    });
+    common_vendor.onLoad(() => {
+      var _a;
+      calculateBottomOffset();
+      getModeMapTree();
+      getActiveRoom();
+      getHasComplaint();
+      getActiveDeposit();
+      const sys = common_vendor.index.getSystemInfoSync();
+      common_vendor.index.__f__("log", "at pages/index/index.vue:434", sys);
+      let padding = 0;
+      windowHeight.value = sys.windowHeight;
+      system.fetchConfig();
+      if (!((_a = userStore.userInfo) == null ? void 0 : _a.default_user_hero_id)) {
+        common_vendor.index.__f__("log", "at pages/index/index.vue:440", "没有设置打团角色");
+      }
+      const menu = common_vendor.index.getMenuButtonBoundingClientRect();
+      const btnHeight = menu.bottom - menu.top;
+      const verticalPadding = (menu.top - sys.statusBarHeight) * 2;
+      topHeight.value = sys.statusBarHeight;
+      padding = btnHeight + verticalPadding;
+      navBarHeight.value = padding;
+      setTimeout(() => {
+        showPaging.value = true;
+      }, 200);
     });
     const tabs = [
-      { label: "微信区", value: "wechat", icon: "https://dnf.hanyunkeji.cn/static/home/wechat.png" },
-      { label: "QQ区", value: "QQ", icon: "https://dnf.hanyunkeji.cn/static/home/qq.png" }
+      {
+        label: "微信区",
+        value: "wechat",
+        icon: "https://dnf.hanyunkeji.cn/static/home/wechat.png"
+      },
+      {
+        label: "QQ区",
+        value: "QQ",
+        icon: "https://dnf.hanyunkeji.cn/static/home/qq.png"
+      }
     ];
     const currentTab = common_vendor.ref("wechat");
+    common_vendor.ref("");
     const selectTab = (val) => {
       currentTab.value = val;
       paging.value.reload();
@@ -74,38 +141,49 @@ const _sfc_main = {
     common_vendor.onLoad((params) => {
       if (params.share_uid) {
         common_vendor.index.setStorageSync("share_uid", params.share_uid);
-        common_vendor.index.__f__("log", "at pages/index/index.vue:314", "缓存分享uid" + params.share_uid);
+        common_vendor.index.__f__("log", "at pages/index/index.vue:487", "缓存分享uid" + params.share_uid);
       }
     });
     const handleShowSelector = () => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:320", "父组件收到 show-selector 事件");
+      common_vendor.index.__f__("log", "at pages/index/index.vue:491", "父组件收到 show-selector 事件");
       show.value = true;
     };
     const shareShowHandle = () => {
       shareShow.value = false;
-      handleActiveRoom();
+      common_vendor.index.__f__("log", "at pages/index/index.vue:498", `房间id${shareRoomInfo.value.room_id}`);
+      common_vendor.index.navigateTo({
+        url: `/pages/room/room?room_id=${shareRoomInfo.value.room_id}`
+      });
+      getActiveRoom();
     };
-    const handleShowShare = (val) => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:331", "父组件收到 show-share 事件" + val);
-      shareRoomInfo.value = val;
-      shareShow.value = true;
+    const rechargeShowHandle = (val) => {
+      common_vendor.index.__f__("log", "at pages/index/index.vue:506", "接收rechargeShowHandle");
+      rechargeShow.value = true;
+      orderInfo.value = val;
+    };
+    const handleShowShare = (val, type = "create") => {
+      common_vendor.index.__f__("log", "at pages/index/index.vue:511", "父组件收到 show-share 事件" + val);
+      if (type == "create") {
+        shareRoomInfo.value = val;
+        shareShow.value = true;
+      }
       paging.value.reload();
       getActiveRoom();
     };
     function onSelectMode(index) {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:338", selectedModeIndex.value);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:521", selectedModeIndex.value);
       selectedModeIndex.value = index;
       selectedMapIndex.value = 0;
       paging.value.reload();
     }
     function onSelectMap(index) {
       selectedMapIndex.value = index;
-      common_vendor.index.__f__("log", "at pages/index/index.vue:346", index);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:530", index);
       paging.value.reload();
     }
     const getModeMapTree = async () => {
       const res = await common_vendor.index.$http.get("/dungeon/modeMapTree");
-      common_vendor.index.__f__("log", "at pages/index/index.vue:352", "用户信息:", res);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:535", "用户信息:", res);
       if (res.code === 1) {
         modeMapTree.value = res.data;
         paging.value.reload();
@@ -115,22 +193,57 @@ const _sfc_main = {
     const getActiveRoom = async () => {
       const res = await common_vendor.index.$http.get("/room/getActiveRoom");
       if (res.code === 1 && res.data.has_room) {
-        common_vendor.index.__f__("log", "at pages/index/index.vue:364", "zhix ");
+        common_vendor.index.__f__("log", "at pages/index/index.vue:547", "zhix ");
         activeRoomId.value = res.data.room_id;
         showContinue.value = true;
       } else {
         showContinue.value = false;
       }
     };
+    const hasComplaintActive = common_vendor.ref(null);
+    const getHasComplaint = async () => {
+      const res = await common_vendor.index.$http.get("/room/hasComplaint");
+      if (res.code === 1 && res.data.has) {
+        hasComplaintActive.value = true;
+      } else {
+        hasComplaintActive.value = false;
+      }
+    };
+    const depositActive = common_vendor.ref(false);
+    const getActiveDeposit = async () => {
+      const res = await common_vendor.index.$http.get("/room/getActiveDeposit");
+      if (res.code === 1 && res.data.has_deposit) {
+        depositActive.value = true;
+      } else {
+        depositActive.value = false;
+      }
+    };
+    const onDeposit = () => {
+      title.value = "提取泰拉车卖家押金";
+      content.value = "资金原路退还";
+      confirmText.value = "确认提取";
+      dialogShow.value = true;
+      onConfirm.value = doDeposit;
+    };
+    const doDeposit = async () => {
+      const res = await common_vendor.index.$http.get("/dungeon/doDeposit");
+      if (res.code === 1) {
+        depositActive.value = false;
+        common_vendor.index.showToast({
+          title: res.msg,
+          icon: "none"
+        });
+      }
+    };
     const handleActiveRoom = () => {
       linkTo(`/pages/room/room?room_id=${activeRoomId.value}`);
     };
     const refresh = () => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:377", "1111");
+      common_vendor.index.__f__("log", "at pages/index/index.vue:600", "1111");
       paging.value.reload();
     };
     const onShare = () => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:382", "分享房间");
+      common_vendor.index.__f__("log", "at pages/index/index.vue:604", "分享房间");
       common_vendor.index.navigateTo({
         url: `/pages/room/room?room_id=${shareRoomInfo.value.room_id}`
       });
@@ -142,30 +255,12 @@ const _sfc_main = {
         imageUrl: shareRoomInfo.value.mode_image
       };
     });
-    common_vendor.onMounted(() => {
-      var _a;
-      getModeMapTree();
-      getActiveRoom();
-      const sys = common_vendor.index.getSystemInfoSync();
-      let padding = 0;
-      windowHeight.value = sys.windowHeight;
-      system.fetchConfig();
-      if (!((_a = userStore.userInfo) == null ? void 0 : _a.default_user_hero_id)) {
-        common_vendor.index.__f__("log", "at pages/index/index.vue:427", "没有设置打团角色");
-      }
-      const menu = common_vendor.index.getMenuButtonBoundingClientRect();
-      const btnHeight = menu.bottom - menu.top;
-      const verticalPadding = (menu.top - sys.statusBarHeight) * 2;
-      topHeight.value = sys.statusBarHeight;
-      padding = btnHeight + verticalPadding;
-      navBarHeight.value = padding;
-    });
     const getRoomList = async (pageNo, pageSize) => {
       if (!modeMapTree.value[selectedModeIndex.value]) {
-        common_vendor.index.__f__("log", "at pages/index/index.vue:457", "不存在不发起请求");
+        common_vendor.index.__f__("log", "at pages/index/index.vue:630", "不存在不发起请求");
         return false;
       }
-      common_vendor.index.__f__("log", "at pages/index/index.vue:461", modeMapTree.value[selectedModeIndex.value].code);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:634", modeMapTree.value[selectedModeIndex.value].code);
       const res = await common_vendor.index.$http.post("/dungeon/list", {
         channel: currentTab.value,
         mode_code: modeMapTree.value[selectedModeIndex.value].code,
@@ -175,11 +270,6 @@ const _sfc_main = {
       });
       if (res.code === 1) {
         paging.value.complete(res.data.list);
-      } else {
-        common_vendor.index.showToast({
-          title: res.msg,
-          icon: "none"
-        });
       }
     };
     const leftMenu = common_vendor.ref([]);
@@ -201,14 +291,21 @@ const _sfc_main = {
         deck: "deck",
         team: "team",
         baoche: "baoche",
+        leech: "support",
         lock: "lock"
       };
       const key = map[code] || "unknown";
+      if (code == "lock") {
+        return `https://dnf.hanyunkeji.cn/static/icons/lock_active.svg`;
+      }
+      if (code == "seller") {
+        return `https://dnf.hanyunkeji.cn/static/icons/seller_active.svg`;
+      }
       return `https://dnf.hanyunkeji.cn/static/icons/${key}_${filled ? "active" : "empty"}.png`;
     };
     const scrollViewStyle = common_vendor.computed(() => {
-      const contentHeight = windowHeight.value - statusBarHeight.value - 273;
-      return `height: ${contentHeight}px; overflow: auto;`;
+      let height = common_vendor.index.getSystemInfoSync().statusBarHeight;
+      return `height:calc(100vh -  ${height}px - 600rpx)`;
     });
     return (_ctx, _cache) => {
       var _a, _b, _c, _d, _e, _f;
@@ -222,52 +319,63 @@ const _sfc_main = {
           show: show.value,
           zIndex: "1000000"
         }),
-        e: common_vendor.p({
+        e: common_vendor.o(onClick),
+        f: common_vendor.o(($event) => dialogShow.value = false),
+        g: common_vendor.p({
+          show: dialogShow.value,
+          content: content.value,
+          confirmText: confirmText.value,
+          maskClosable: true
+        }),
+        h: common_vendor.sr("modalRef", "1cf27b2a-3"),
+        i: common_vendor.p({
           name: "close"
         }),
-        f: common_vendor.o(shareShowHandle),
-        g: common_vendor.o(($event) => onShare()),
-        h: common_vendor.p({
+        j: common_vendor.o(shareShowHandle),
+        k: common_vendor.o(($event) => onShare()),
+        l: common_vendor.p({
           ["model-value"]: shareShow.value,
           width: "80%",
           height: "415rpx",
           borderRadius: "16rpx"
         }),
-        i: contentShow.value
+        m: contentShow.value
       }, contentShow.value ? {
-        j: common_vendor.o(($event) => contentShow.value = $event),
-        k: common_vendor.p({
+        n: common_vendor.o(($event) => contentShow.value = $event),
+        o: common_vendor.p({
           contentId: contentId.value,
           modelValue: contentShow.value
         })
       } : {}, {
-        l: common_vendor.p({
+        p: common_vendor.p({
           ["model-value"]: contentShow.value,
           width: "80%",
           height: "60vh",
           borderRadius: "16rpx"
         }),
-        m: common_vendor.o(handleShowSelector),
-        n: common_vendor.o(handleShowShare),
-        o: common_vendor.o(($event) => teamShow.value = $event),
-        p: common_vendor.p({
+        q: common_vendor.o(handleShowSelector),
+        r: common_vendor.o(handleShowShare),
+        s: common_vendor.o(rechargeShowHandle),
+        t: common_vendor.o(($event) => teamShow.value = $event),
+        v: common_vendor.p({
           modeMapTree: modeMapTree.value,
           channel: currentTab.value,
           useUserStore: common_vendor.unref(userStore),
           modelValue: teamShow.value
         }),
-        q: common_vendor.p({
+        w: common_vendor.p({
           ["model-value"]: teamShow.value,
           width: "90%",
           height: "70%",
           borderRadius: "16rpx"
         }),
-        r: childReady.value
+        x: childReady.value
       }, childReady.value ? {
-        s: common_vendor.o(handleShowSelector),
-        t: common_vendor.o(handleShowShare),
-        v: common_vendor.o(($event) => dungeonShow.value = $event),
-        w: common_vendor.p({
+        y: common_vendor.o(handleShowSelector),
+        z: common_vendor.o(handleShowShare),
+        A: common_vendor.o(rechargeShowHandle),
+        B: common_vendor.o(($event) => dungeonShow.value = $event),
+        C: common_vendor.p({
           defaultDungeonCode: "ozma_assault",
           defaultMapCode: "terache",
           defaultRoleCode: defaultRoleCode.value,
@@ -277,18 +385,28 @@ const _sfc_main = {
           modelValue: dungeonShow.value
         })
       } : {}, {
-        x: common_vendor.p({
+        D: common_vendor.p({
           ["model-value"]: dungeonShow.value,
           width: "90%",
+          ["z-index"]: 20078,
           height: "70%",
           borderRadius: "16rpx"
         }),
-        y: showContinue.value
-      }, showContinue.value ? {
-        z: common_vendor.o(handleActiveRoom)
+        E: rechargeShow.value
+      }, rechargeShow.value ? {
+        F: common_vendor.o(($event) => rechargeShow.value = $event),
+        G: common_vendor.p({
+          orderInfo: orderInfo.value,
+          modelValue: rechargeShow.value
+        })
       } : {}, {
-        A: common_vendor.o(($event) => refresh()),
-        B: common_vendor.f(tabs, (item, index, i0) => {
+        H: showContinue.value
+      }, showContinue.value ? {
+        I: common_vendor.o(handleActiveRoom),
+        J: totalOffset.value + "rpx"
+      } : {}, {
+        K: common_vendor.o(($event) => refresh()),
+        L: common_vendor.f(tabs, (item, index, i0) => {
           return {
             a: item.icon,
             b: common_vendor.t(item.label),
@@ -297,18 +415,22 @@ const _sfc_main = {
             e: item.value
           };
         }),
-        C: common_vendor.o(($event) => teamShow.value = true),
-        D: !((_a = common_vendor.unref(userStore).userInfo) == null ? void 0 : _a.default_user_hero_id)
+        M: hasComplaintActive.value
+      }, hasComplaintActive.value ? {
+        N: common_vendor.o(($event) => linkTo("/pages/user/complaint-record"))
+      } : {}, {
+        O: common_vendor.o(($event) => teamShow.value = true),
+        P: !((_a = common_vendor.unref(userStore).userInfo) == null ? void 0 : _a.default_user_hero_id)
       }, !((_b = common_vendor.unref(userStore).userInfo) == null ? void 0 : _b.default_user_hero_id) ? {} : {
-        E: (_c = common_vendor.unref(userStore).userInfo.default_hero) == null ? void 0 : _c.hero_avatar,
-        F: common_vendor.t(((_d = common_vendor.unref(userStore).userInfo.default_hero) == null ? void 0 : _d.resist_power) || ""),
-        G: common_vendor.t(((_e = common_vendor.unref(userStore).userInfo.default_hero) == null ? void 0 : _e.hero_name) || "默认角色")
+        Q: (_c = common_vendor.unref(userStore).userInfo.default_hero) == null ? void 0 : _c.hero_avatar,
+        R: common_vendor.t(((_d = common_vendor.unref(userStore).userInfo.default_hero) == null ? void 0 : _d.resist_power) || ""),
+        S: common_vendor.t(((_e = common_vendor.unref(userStore).userInfo.default_hero) == null ? void 0 : _e.hero_name) || "默认角色")
       }, {
-        H: common_vendor.o(($event) => handleRoleCode("seller")),
-        I: common_vendor.o(($event) => handleRoleCode("deck")),
-        J: common_vendor.o(($event) => show.value = true),
-        K: common_vendor.o(($event) => handleContent(1)),
-        L: common_vendor.f(modeMapTree.value, (mode, index, i0) => {
+        T: common_vendor.o(($event) => handleRoleCode("seller")),
+        U: common_vendor.o(($event) => handleRoleCode("deck")),
+        V: common_vendor.o(($event) => show.value = true),
+        W: common_vendor.o(($event) => handleContent(1)),
+        X: common_vendor.f(modeMapTree.value, (mode, index, i0) => {
           return {
             a: common_vendor.t(mode.title),
             b: common_vendor.n(selectedModeIndex.value === index ? "mask-hidden" : ""),
@@ -318,17 +440,24 @@ const _sfc_main = {
             f: common_vendor.o(($event) => onSelectMode(index), mode.id)
           };
         }),
-        M: common_vendor.f(((_f = currentMode.value) == null ? void 0 : _f.maps) || [], (map, idx, i0) => {
+        Y: depositActive.value
+      }, depositActive.value ? {
+        Z: common_vendor.o(onDeposit)
+      } : {}, {
+        aa: common_vendor.f(((_f = currentMode.value) == null ? void 0 : _f.maps) || [], (map, idx, i0) => {
           return common_vendor.e({
-            a: common_vendor.t(map.title),
-            b: selectedMapIndex.value === idx
+            a: map.image,
+            b: common_vendor.t(map.title),
+            c: selectedMapIndex.value === idx
           }, selectedMapIndex.value === idx ? {} : {}, {
-            c: map.id,
-            d: common_vendor.n(selectedMapIndex.value === idx ? "active" : ""),
-            e: common_vendor.o(($event) => onSelectMap(idx), map.id)
+            d: map.id,
+            e: common_vendor.n(selectedMapIndex.value === idx ? "active" : ""),
+            f: common_vendor.o(($event) => onSelectMap(idx), map.id)
           });
         }),
-        N: common_vendor.f(roomList.value, (room, k0, i0) => {
+        ab: showPaging.value
+      }, showPaging.value ? {
+        ac: common_vendor.f(roomList.value, (room, k0, i0) => {
           return common_vendor.e({
             a: room.status == "waiting"
           }, room.status == "waiting" ? {
@@ -338,38 +467,49 @@ const _sfc_main = {
           }, room.status == "in_progress" ? {
             d: common_vendor.n(room.status)
           } : {}, {
-            e: room.creator_hero.hero_avatar,
-            f: common_vendor.t(room.creator_hero.resist_power || ""),
-            g: common_vendor.t(room.creator_hero.hero_name || ""),
-            h: common_vendor.t(room.created_text),
-            i: room.status == "completed"
-          }, room.status == "completed" ? {} : {}, {
-            j: room.status == "disbanded"
-          }, room.status == "disbanded" ? {} : {}, {
-            k: room.tera_own
-          }, room.tera_own ? {
-            l: common_vendor.t(room.tera_ratio)
+            e: room.map_code != "terache"
+          }, room.map_code != "terache" ? {
+            f: room.creator_hero.hero_avatar
           } : {}, {
-            m: common_vendor.f(room.positions, (pos, k1, i1) => {
+            g: room.map_code == "terache"
+          }, room.map_code == "terache" ? {} : {}, {
+            h: room.map_code == "terache"
+          }, room.map_code == "terache" ? {
+            i: common_vendor.t(room.tera_own || "")
+          } : {
+            j: common_vendor.t(room.creator_hero.resist_power || ""),
+            k: common_vendor.t(room.creator_hero.hero_name || "")
+          }, {
+            l: common_vendor.t(room.created_text),
+            m: room.status == "completed"
+          }, room.status == "completed" ? {} : {}, {
+            n: room.status == "disbanded"
+          }, room.status == "disbanded" ? {} : {}, {
+            o: room.tera_own
+          }, room.tera_own ? {
+            p: common_vendor.t(room.tera_ratio)
+          } : {}, {
+            q: common_vendor.f(room.positions, (pos, k1, i1) => {
               return {
                 a: pos.role_id,
                 b: getRoleIcon(pos.code, pos.filled)
               };
             }),
-            n: room.id,
-            o: common_vendor.o(($event) => linkTo(`/pages/room/room?room_id=${room.id}`), room.id)
+            r: room.id,
+            s: common_vendor.o(($event) => linkTo(`/pages/room/room?room_id=${room.id}`), room.id)
           });
         }),
-        O: common_vendor.sr(paging, "1cf27b2a-10", {
+        ad: common_vendor.sr(paging, "1cf27b2a-13", {
           "k": "paging"
         }),
-        P: common_vendor.o(getRoomList),
-        Q: common_vendor.o(($event) => roomList.value = $event),
-        R: common_vendor.p({
+        ae: common_vendor.o(getRoomList),
+        af: common_vendor.o(($event) => roomList.value = $event),
+        ag: common_vendor.p({
           fixed: false,
           modelValue: roomList.value
-        }),
-        S: common_vendor.s(scrollViewStyle.value)
+        })
+      } : {}, {
+        ah: common_vendor.s(scrollViewStyle.value)
       });
     };
   }
